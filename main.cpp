@@ -47,6 +47,21 @@ void stringTokenizer(string s, string del, vector<string>&vec)
     
 }
 
+void insertionSort(vector<string>&array) {
+   int j;
+   string key;
+   int size=array.size();
+   for(int i = 1; i<size; i++) {
+      key = array[i];//take value
+      j = i;
+      while(j > 0 && array[j-1]>key) {
+         array[j] = array[j-1];
+         j--;
+      }
+      array[j] = key;   //insert in right place
+   }
+}
+
 void printBoard(){
     string line;
     for(int numInput=0;numInput<vecLines.size();numInput++){
@@ -59,16 +74,18 @@ void printBoard(){
     
 
         int skip,pos;
+        int col,colToRead;
+        for(int row=6;row>=0;row--){//FIXME: col should no correspond to the actual col we read from vecBoardLine 
+            col=0;
+            for(int colToRead=0;colToRead<vecBoardLine[row].size();colToRead++){
 
-        for(int row=6;row>=0;row--){
-            for(int col=0;col<7;col++){
-                // cout<<vecBoardLine[row].substr(col,1)<<endl;
-                if(isdigit(vecBoardLine[row][col])){
-                    skip=stoi(vecBoardLine[row].substr(col,1));
-                    col+=skip-1;
+                if(isdigit(vecBoardLine[row][colToRead])){
+                    skip=stoi(vecBoardLine[row].substr(colToRead,1));
+                    col+=skip;
                 }else{
-                    pos=animalToOut[vecBoardLine[row].substr(col,1)];
+                    pos=animalToOut[vecBoardLine[row].substr(colToRead,1)];
                     vecBoardOutput[pos].push_back(vecColStr[col]+to_string(row+1));
+                    col+=1;
                 }
             }
         }
@@ -78,6 +95,7 @@ void printBoard(){
             line+=lineToOut[i];
             int elementNum=0;
             elementNum=vecBoardOutput[i].size();
+            insertionSort(vecBoardOutput[i]);
             for(int j=0;j<elementNum;j++){
                 line+=vecBoardOutput[i][j]+" ";
             }
@@ -92,12 +110,14 @@ void printBoard(){
 
         cout<<endl;
 
-        for(int i=0;i<17;i++){
+        for(int i=0;i<16;i++){
             vecBoardOutput[i].clear();
         }
     }
     
 }
+
+
 
 
 int main(){
