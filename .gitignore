@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+# Zips
+*.zip
+
+# VSCode compilation stuff
+/.vscode
+
+# Main executable
+/main
