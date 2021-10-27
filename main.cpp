@@ -173,9 +173,96 @@ void initBoard(string line){
     
 
 }
-void movesLion(){
-    //TODO: Implement a better board state vector
+void removeByValue (vector<int>&vec,int value){
+	// This is the meat & potatoes
+  	for(int i=0;i<vec.size();i++){
+        if(vec[i]==value){
+            vec.erase(vec.begin() + i);
+        }
+    }
+}
+void movesLion(char colourToMove){
     //TODO: Check the available moves for the lion and output them
+    //TODO: Optimise by saving pieces in a vector and using a map to translate the column eg a2
+
+    int rowPos,colPos;
+    if(colourToMove=='w'){
+        //Looking for uppercase L
+        for(int row=0;row<7;row++){
+            for(int col=0;col<7;col++){
+                if(vecBoardState[row][col]=="L"){
+                    rowPos=row;
+                    colPos=col;
+                }         
+            }
+        }
+        //King can move 8 directions: 0:North,1:North-east,2:East,3:South-east,4:South,5:South-west,6:West,7:North-west
+        vector<int>availableMoves={0,1,2,3,4,5,6,7};
+        //Keep in mind, white lion box is 02,03,04,12,13,14,22,23,24
+        
+        //Case 1: left most column
+        if(colPos==2){
+            //No 5,6,7
+            removeByValue(availableMoves,5);
+            removeByValue(availableMoves,6);
+            removeByValue(availableMoves,7);
+        }
+        //Case 2: Right most column
+        else if(colPos==4){
+            //No 1,2,3
+            removeByValue(availableMoves,1);
+            removeByValue(availableMoves,2);
+            removeByValue(availableMoves,3);
+        }
+        //Case 3: Bottom most row
+        if(rowPos==0){
+            //No 3,4,5
+            removeByValue(availableMoves,3);
+            removeByValue(availableMoves,4);
+            removeByValue(availableMoves,5);
+        }
+        //Case 4: Top most row
+        else if(rowPos==2){
+            //No 0,1,7
+            removeByValue(availableMoves,0);
+            removeByValue(availableMoves,1);
+            removeByValue(availableMoves,7);
+        }
+        //Case 5: Own piece blocking us
+        //Case 6: Capture enemy lion across river
+
+        string outputLine;
+        //Translate the available moves to a square
+        for(int i=0;i<availableMoves.size();i++){
+            //Use a map to give the row and col updates for a move
+            //Translate square to the correct board notation
+            //Add the move to outputLine
+        }
+        //Output all the squares we can move to
+
+
+    }else{
+        //Looking for lowercase l
+        for(int row=0;row<7;row++){
+            for(int col=0;col<7;col++){
+                if(vecBoardState[row][col]=="L"){
+                    rowPos=row;
+                    colPos=col;
+                }         
+            }
+        }
+        //Black lion box is 72,73,74,62,63,64,52,53,54
+
+        //Case 1: left most column
+        //Case 2: Right most column
+        //Case 3: Bottom most row
+        //Case 4: Top most row
+        //Case 5: Own piece blocking us
+        //Case 6: Capture enemy lion across river
+    }
+
+
+
 
 }
 
@@ -191,6 +278,7 @@ int main(){
         vecLines[k]=line;
     }
 
+    // printBoard();
     initBoard(vecLines[0]);
 
     cout<<endl;
