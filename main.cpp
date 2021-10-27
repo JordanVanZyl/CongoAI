@@ -181,12 +181,12 @@ void removeByValue (vector<int>&vec,int value){
         }
     }
 }
-void movesLion(char colourToMove){
+void movesLion(string colourToMove){
     //TODO: Check the available moves for the lion and output them
     //TODO: Optimise by saving pieces in a vector and using a map to translate the column eg a2
 
     int rowPos,colPos;
-    if(colourToMove=='w'){
+    if(colourToMove=="w"){
         //Looking for uppercase L
         for(int row=0;row<7;row++){
             for(int col=0;col<7;col++){
@@ -196,8 +196,14 @@ void movesLion(char colourToMove){
                 }         
             }
         }
+
+        int move,newRow,newCol;
         //King can move 8 directions: 0:North,1:North-east,2:East,3:South-east,4:South,5:South-west,6:West,7:North-west
         vector<int>availableMoves={0,1,2,3,4,5,6,7};
+        vector<int>vecRowColUpdate;
+        map<int,vector<int>>rowColUpdate{
+            {0,{1,0}},{1,{1,1}},{2,{0,1}},{3,{-1,1}},{4,{-1,0}},{5,{-1,-1}},{6,{0,-1}},{7,{1,-1}}
+        };
         //Keep in mind, white lion box is 02,03,04,12,13,14,22,23,24
         
         //Case 1: left most column
@@ -229,14 +235,40 @@ void movesLion(char colourToMove){
             removeByValue(availableMoves,7);
         }
         //Case 5: Own piece blocking us
+        vector<int>movesToDelete;
+        for(int i=0;i<availableMoves.size();i++){
+            //Use a map to give the row and col updates for a move
+            move=availableMoves[i];
+            vecRowColUpdate=rowColUpdate[move];
+            newRow=rowPos+vecRowColUpdate[0];
+            newCol=colPos+vecRowColUpdate[1];
+
+            if(vecBoardState[newRow][newCol]=="P"||vecBoardState[newRow][newCol]=="E"||vecBoardState[newRow][newCol]=="Z"){
+                movesToDelete.push_back(move);//TODO: Finish this
+            }
+        }
         //Case 6: Capture enemy lion across river
 
         string outputLine;
+        map<int,string>colToString{
+            {0,"a"},{1,"b"},{2,"c"},{3,"d"},{4,"e"},{5,"f"},{6,"g"}
+        };
+        
+        string currSquare,nextSquare;
+       
         //Translate the available moves to a square
         for(int i=0;i<availableMoves.size();i++){
             //Use a map to give the row and col updates for a move
+            move=availableMoves[i];
+            vecRowColUpdate=rowColUpdate[move];
+            newRow=rowPos+vecRowColUpdate[0];
+            newCol=colPos+vecRowColUpdate[1];
             //Translate square to the correct board notation
+            currSquare=colToString[colPos]+to_string(rowPos);
+            nextSquare=colToString[newCol]+to_string(newRow);
             //Add the move to outputLine
+            outputLine=currSquare+nextSquare;
+            cout<<outputLine<<" ";
         }
         //Output all the squares we can move to
 
@@ -282,14 +314,14 @@ int main(){
     initBoard(vecLines[0]);
 
     cout<<endl;
-    for(int row=0;row<7;row++){
+    for(int row=6;row>=0;row--){
         for(int col=0;col<7;col++){
             cout<<vecBoardState[row][col]<<" ";
         }
         cout<<endl;
     }
-    
 
+    movesLion(vecLine[1]);
         
 
     
