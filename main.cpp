@@ -81,20 +81,20 @@ void printBoard(){
     
 
         int skip,pos;
-        int col,colToRead;
+        int col,charToRead;
         for(int row=6;row>=0;row--){
             col=0;
             //Loop through each letter in the string for a board line
-            for(int colToRead=0;colToRead<vecBoardLine[row].size();colToRead++){
+            for(int charToRead=0;charToRead<vecBoardLine[row].size();charToRead++){
                 //Check for a skip digit
-                if(isdigit(vecBoardLine[row][colToRead])){
+                if(isdigit(vecBoardLine[row][charToRead])){
                     //Get the number in the correct form
-                    skip=stoi(vecBoardLine[row].substr(colToRead,1));
+                    skip=stoi(vecBoardLine[row].substr(charToRead,1));
                     //Perform the column skip
                     col+=skip;
                 }else{
                     //Get the value of the row in the vector that will output to console
-                    pos=animalToOut[vecBoardLine[row].substr(colToRead,1)];
+                    pos=animalToOut[vecBoardLine[row].substr(charToRead,1)];
                     //Push the position of the piece to the correct row in the vector that will output to console
                     vecBoardOutput[pos].push_back(vecColStr[col]+to_string(row+1));
                     //Increment the column number normally
@@ -138,45 +138,39 @@ void printBoard(){
     
 }
 
-void initBoard(){
-    //Loop through all board lines entered
-    for(int numInput=0;numInput<vecLines.size();numInput++){
-        //Clear splitting vectors
-        vecBoardLine.clear();
-        vecLine.clear();
-        //Get the line to split
-        line=vecLines[numInput];
-        //Split by spaces to give board, move number and colour to play
-        stringTokenizer(line," ",vecLine);
-        //Split by slashes to give each row for the board ordered in descending row order
-        stringTokenizer(vecLine[0],"/",vecBoardLine);
-        //Reverse the vector holding the board line to give the board rows in ascending order
-        reverse(vecBoardLine.begin(),vecBoardLine.end());
-    
+void initBoard(string line){
+    //Clear splitting vectors
+    vecBoardLine.clear();
+    vecLine.clear();
+    //Split by spaces to give board, move number and colour to play
+    stringTokenizer(line," ",vecLine);
+    //Split by slashes to give each row for the board ordered in descending row order
+    stringTokenizer(vecLine[0],"/",vecBoardLine);
+    //Reverse the vector holding the board line to give the board rows in ascending order
+    reverse(vecBoardLine.begin(),vecBoardLine.end());
 
-        int skip,pos;
-        int col,colToRead;
-        for(int row=6;row>=0;row--){
-            col=0;
-            //Loop through each letter in the string for a board line
-            for(int colToRead=0;colToRead<vecBoardLine[row].size();colToRead++){
-                //Check for a skip digit
-                if(isdigit(vecBoardLine[row][colToRead])){
-                    //Get the number in the correct form
-                    skip=stoi(vecBoardLine[row].substr(colToRead,1));
-                    //Perform the column skip
-                    col+=skip;
-                }else{
-                    //Get the value of the row in the vector that will output to console
-                    pos=animalToOut[vecBoardLine[row].substr(colToRead,1)];
-                    //Push the position of the piece to the correct row in the vector that will output to console
-                    vecBoardOutput[pos].push_back(vecColStr[col]+to_string(row+1));
-                    //Increment the column number normally
-                    col+=1;
-                }
+
+    int skip,pos;
+    int col,charToRead;
+    for(int row=6;row>=0;row--){
+        col=0;
+        //Loop through each letter in the string for a board line
+        for(int charToRead=0;charToRead<vecBoardLine[row].size();charToRead++){
+            //Check for a skip digit
+            if(isdigit(vecBoardLine[row][charToRead])){
+                //Get the number in the correct form
+                skip=stoi(vecBoardLine[row].substr(charToRead,1));
+                //Perform the column skip
+                col+=skip;
+            }else{
+                //Update the board with the piece
+                vecBoardState[row][col]=vecBoardLine[row][charToRead];
+                //Increment the column number normally
+                col+=1;
             }
         }
     }
+    
 
 }
 void movesLion(){
@@ -197,8 +191,15 @@ int main(){
         vecLines[k]=line;
     }
 
-    // printBoard();
+    initBoard(vecLines[0]);
 
+    cout<<endl;
+    for(int row=0;row<7;row++){
+        for(int col=0;col<7;col++){
+            cout<<vecBoardState[row][col]<<" ";
+        }
+        cout<<endl;
+    }
     
 
         
