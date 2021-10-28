@@ -180,6 +180,7 @@ void removeByValue (vector<int>&vec,int value){
         }
     }
 }
+
 void movesLion(char colourToMove){
     //TODO: Check the available moves for the lion and output them
     //TODO: Optimise by saving pieces in a vector and using a map to translate the column eg a2
@@ -271,6 +272,8 @@ void movesElephant(char colourToMove){
     bool elephant1found = false;
     vector<int> movesToDelete1;
     vector<int> movesToDelete2;
+    vector<int> originalposition1;
+    vector<int> originalposition2;
 
     if (colourToMove == 'w'){       //if white to move
         for (int row = 0; row<7 ; row++){       
@@ -385,9 +388,16 @@ void movesElephant(char colourToMove){
         }
 
         //print out availbe moves as move board 
-        
-    }else{      //black to move
+        string origin1;     //original postion of elephant 1
 
+        for (int i = 0; i<legalmoves.size(); i++){
+            for (int j = 0; j < legalmoves[0].size(); j++){
+                cout << legalmoves[i][j];
+            }
+            cout << endl;
+        }
+    }else{      //black to move
+        cout << "its black to move" << endl;
     };
 }
 void movesPawn(char colourToMove){
