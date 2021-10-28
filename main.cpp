@@ -290,10 +290,10 @@ void movesLion(string colourToMove){
             
         
 
-        string outputLine;
+        // string outputLine;
         
         string currSquare,nextSquare;
-       
+        vector<string>vecOutputLine;
         //Translate the available moves to a square
         for(int i=0;i<availableMoves.size();i++){
             //Use a map to give the row and col updates for a move
@@ -301,7 +301,7 @@ void movesLion(string colourToMove){
             if(move==8){
                 currSquare=colToString[colPosWL]+to_string(rowPosWL+1);
                 nextSquare=colToString[colPosBL]+to_string(rowPosBL+1);  
-                outputLine=currSquare+nextSquare;              
+                vecOutputLine.push_back(currSquare+nextSquare); 
             }else{
                 vecRowColUpdate=rowColUpdate[move];
                 newRow=rowPosWL+vecRowColUpdate[0];
@@ -310,13 +310,16 @@ void movesLion(string colourToMove){
                 currSquare=colToString[colPosWL]+to_string(rowPosWL+1);
                 nextSquare=colToString[newCol]+to_string(newRow+1);
                 //Add the move to outputLine
-                outputLine=currSquare+nextSquare;
+                vecOutputLine.push_back(currSquare+nextSquare);
             }
-            cout<<outputLine<<" ";//Output all the squares we can move to
+            
+        }
+        //For sorted output
+        insertionSort(vecOutputLine);
+        for(int i=0;i<vecOutputLine.size();i++){
+            cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
         }
         
-
-
     }else{
         //Case 1: left most column
         if(colPosBL==2){
@@ -393,8 +396,8 @@ void movesLion(string colourToMove){
             }
 
         }
-        string outputLine;
-        
+        // string outputLine;
+        vector<string>vecOutputLine;
         string currSquare,nextSquare;
        
         //Translate the available moves to a square
@@ -404,7 +407,7 @@ void movesLion(string colourToMove){
             if(move==8){
                 currSquare=colToString[colPosBL]+to_string(rowPosBL+1);
                 nextSquare=colToString[colPosWL]+to_string(rowPosWL+1);  
-                outputLine=currSquare+nextSquare;              
+                vecOutputLine.push_back(currSquare+nextSquare);              
             }else{
                 vecRowColUpdate=rowColUpdate[move];
                 newRow=rowPosBL+vecRowColUpdate[0];
@@ -413,10 +416,14 @@ void movesLion(string colourToMove){
                 currSquare=colToString[colPosBL]+to_string(rowPosBL+1);
                 nextSquare=colToString[newCol]+to_string(newRow+1);
                 //Add the move to outputLine
-                outputLine=currSquare+nextSquare;
+                vecOutputLine.push_back(currSquare+nextSquare);
             }
-            cout<<outputLine<<" ";//Output all the squares we can move to
+            
         }    
+        insertionSort(vecOutputLine);
+        for(int i=0;i<vecOutputLine.size();i++){
+            cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
+        }
         
     }
 
