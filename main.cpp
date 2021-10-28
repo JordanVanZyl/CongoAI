@@ -142,6 +142,15 @@ void printBoard(){
     
 }
 
+void resetBoard(){
+    for(int row=0;row<7;row++){
+        for(int col=0;col<7;col++){
+            vecBoardState[row][col]="-";
+        }
+    }
+    
+}
+
 void initBoard(string line){
     //Clear splitting vectors
     vecBoardLine.clear();
@@ -186,7 +195,6 @@ void removeByValue (vector<int>&vec,int value){
     }
 }
 void movesLion(string colourToMove){
-    //TODO: Sort the output
     //TODO: Allow for multiple inputs and outputs
     int rowPosWL,colPosWL, rowPosBL, colPosBL;
 
@@ -255,7 +263,7 @@ void movesLion(string colourToMove){
         }
 
         if(!movesToDelete.empty()){
-            for(int i=0;i<movesToDelete[i];i++){
+            for(int i=0;i<movesToDelete.size();i++){
                 removeByValue(availableMoves,movesToDelete[i]);
             }
         }
@@ -319,7 +327,7 @@ void movesLion(string colourToMove){
         for(int i=0;i<vecOutputLine.size();i++){
             cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
         }
-        
+
     }else{
         //Case 1: left most column
         if(colPosBL==2){
@@ -363,7 +371,7 @@ void movesLion(string colourToMove){
             }
         }
         if(!movesToDelete.empty()){
-            for(int i=0;i<movesToDelete[i];i++){
+            for(int i=0;i<movesToDelete.size();i++){
                 removeByValue(availableMoves,movesToDelete[i]);
             }
         }
@@ -426,10 +434,10 @@ void movesLion(string colourToMove){
         }
         
     }
-
-
-
-
+    if(!availableMoves.empty()){
+        cout<<endl;
+    }
+    resetBoard();
 }
 
 
@@ -445,17 +453,19 @@ int main(){
     }
 
     // printBoard();
-    initBoard(vecLines[0]);
+    for(int i=0;i<vecLines.size();i++){
+        initBoard(vecLines[i]);
 
-    cout<<endl;
-    for(int row=6;row>=0;row--){
-        for(int col=0;col<7;col++){
-            cout<<vecBoardState[row][col]<<" ";
-        }
-        cout<<endl;
+        // cout<<endl;
+        // for(int row=6;row>=0;row--){
+        //     for(int col=0;col<7;col++){
+        //         cout<<vecBoardState[row][col]<<" ";
+        //     }
+        //     cout<<endl;
+        // }
+        movesLion(vecLine[1]);
     }
-
-    movesLion(vecLine[1]);
+    
         
 
     
