@@ -195,7 +195,7 @@ void removeByValue (vector<int>&vec,int value){
     }
 }
 void movesLion(string colourToMove){
-    //TODO: Allow for multiple inputs and outputs
+    //TODO: Figure out why we are failing the last testcase on moodle
     int rowPosWL,colPosWL, rowPosBL, colPosBL;
 
     //Looking for uppercase L
@@ -284,14 +284,17 @@ void movesLion(string colourToMove){
             }
         }
         //Check for the diagonal capture
-        else if(rowPosWL==2&&rowPosBL==5){
-            //Case 1: our lion at left edge of the square and enemy on the opposite edge
-            if(colPosWL==2&&colPosBL==4){
-                availableMoves.push_back(8);
-            }
-            //Case 2: reverse of case 1
-            if(colPosWL==4&&colPosBL==2){
-                availableMoves.push_back(8);
+        else if(rowPosWL==2&&rowPosBL==4){
+            //Check for piece blocking in the centre of the board
+            if(vecBoardState[3][3]=="-"){
+                //Case 1: our lion at left edge of the square and enemy on the opposite edge
+                if(colPosWL==2&&colPosBL==4){
+                    availableMoves.push_back(8);
+                }
+                //Case 2: reverse of case 1
+                if(colPosWL==4&&colPosBL==2){
+                    availableMoves.push_back(8);
+                }
             }
 
         }
@@ -322,11 +325,21 @@ void movesLion(string colourToMove){
             }
             
         }
-        //For sorted output
-        insertionSort(vecOutputLine);
-        for(int i=0;i<vecOutputLine.size();i++){
-            cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
+        //Check for empty output
+        if(!vecOutputLine.empty()){
+            //For sorted output
+            insertionSort(vecOutputLine);
+            for(int i=0;i<vecOutputLine.size();i++){
+                if(i!=vecBoardOutput.size()-1){
+                    cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
+                }else{
+                    cout<<vecOutputLine[i]<<endl;
+                }
+                
+            }
         }
+      
+
 
     }else{
         //Case 1: left most column
@@ -393,16 +406,18 @@ void movesLion(string colourToMove){
             }
         }
         //Check for the diagonal capture
-        else if(rowPosWL==2&&rowPosBL==5){
-            //Case 1: our lion at left edge of the square and enemy on the opposite edge
-            if(colPosWL==2&&colPosBL==4){
-                availableMoves.push_back(8);
+        else if(rowPosWL==2&&rowPosBL==4){
+            //Check if there is piece blocking in the centre of the board
+            if(vecBoardState[3][3]=="-"){
+                //Case 1: our lion at left edge of the square and enemy on the opposite edge
+                if(colPosWL==2&&colPosBL==4){
+                    availableMoves.push_back(8);
+                }
+                //Case 2: reverse of case 1
+                if(colPosWL==4&&colPosBL==2){
+                    availableMoves.push_back(8);
+                }
             }
-            //Case 2: reverse of case 1
-            if(colPosWL==4&&colPosBL==2){
-                availableMoves.push_back(8);
-            }
-
         }
         // string outputLine;
         vector<string>vecOutputLine;
@@ -428,14 +443,58 @@ void movesLion(string colourToMove){
             }
             
         }    
-        insertionSort(vecOutputLine);
-        for(int i=0;i<vecOutputLine.size();i++){
-            cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
+        //Check for empty output line
+        if(!vecOutputLine.empty()){
+            insertionSort(vecOutputLine);
+            for(int i=0;i<vecOutputLine.size();i++){
+                if(i!=vecOutputLine.size()-1){
+                    cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
+                }else{
+                    cout<<vecOutputLine[i]<<endl;
+                }
+                
+            }
         }
+     
         
     }
     if(!availableMoves.empty()){
         cout<<endl;
+    }
+    resetBoard();
+}
+
+void movesZebra(string colourToMove){
+    int posRowZ,posColZ;
+    vector<int>availableMoves={0,1,2,3,4,5,6,7};
+    vector<int>vecRowColUpdate;
+    map<int,vector<int>>rowColUpdate{
+        {0,{2,-1}},{1,{2,1}},{2,{1,2}},{3,{-1,2}},{4,{-2,1}},{5,{-2,-1}},{6,{-1,-2}},{7,{1,-2}}
+    };
+    if(colourToMove=="w"){
+        //Find the position of the white zebra
+        for(int row=0;row<7;row++){
+            for(int col=0;col<7;col++){
+                if(vecBoardState[row][col]=="Z"){
+                    posRowZ=row;
+                    posColZ=col;
+                }
+            }
+        }
+        //Cases for movement 
+        //Case 1: 1 row from top of board
+        //Case 2: At the top edge of the board
+        //Case 3: 
+    }else{
+        //Find the position of the black zebra
+        for(int row=0;row<7;row++){
+            for(int col=0;col<7;col++){
+                if(vecBoardState[row][col]=="z"){
+                    posRowZ=row;
+                    posColZ=col;
+                }
+            }
+        }
     }
     resetBoard();
 }
