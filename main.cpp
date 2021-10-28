@@ -26,6 +26,10 @@ map<string,int>animalToOut{
     {"P",0},{"p",1},{"S",2},{"s",3},{"G",4},{"g",5},{"M",6},{"m",7},
     {"E",8},{"e",9},{"L",10},{"l",11},{"C",12},{"c",13},{"Z",14},{"z",15}
 };
+//Converting column number to letter on the board for output
+map<int,string>colToString{
+        {0,"a"},{1,"b"},{2,"c"},{3,"d"},{4,"e"},{5,"f"},{6,"g"}
+    };
 
 map<int,string>lineToOut{
     {0,"white pawn: "},{1,"black pawn: "},{2,"white superpawn: "},{3,"black superpawn: "},{4,"white giraffe: "},{5,"black giraffe: "},
@@ -247,12 +251,13 @@ void movesLion(string colourToMove){
                 movesToDelete.push_back(move);//TODO: Finish this
             }
         }
+
+        for(int i=0;i<movesToDelete[i];i++){
+            removeByValue(availableMoves,movesToDelete[i]);
+        }
         //Case 6: Capture enemy lion across river
 
         string outputLine;
-        map<int,string>colToString{
-            {0,"a"},{1,"b"},{2,"c"},{3,"d"},{4,"e"},{5,"f"},{6,"g"}
-        };
         
         string currSquare,nextSquare;
        
