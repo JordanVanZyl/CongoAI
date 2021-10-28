@@ -7,6 +7,7 @@
 #include<algorithm>
 #include<sstream>
 #include<map>
+#include<list>
 
 using namespace std;
 
@@ -149,7 +150,6 @@ void initBoard(string line){
     //Reverse the vector holding the board line to give the board rows in ascending order
     reverse(vecBoardLine.begin(),vecBoardLine.end());
 
-
     int skip,pos;
     int col,charToRead;
     for(int row=6;row>=0;row--){
@@ -170,9 +170,8 @@ void initBoard(string line){
             }
         }
     }
-    
-
 }
+
 void removeByValue (vector<int>&vec,int value){
 	// This is the meat & potatoes
   	for(int i=0;i<vec.size();i++){
@@ -266,6 +265,142 @@ void movesLion(char colourToMove){
 
 }
 
+void movesElephant(char colourToMove){
+    vector < vector<int> > availablemoves1; //list of available moves for the first elephant
+    vector < vector<int> > availablemoves2; //list of available moves for the second elephant
+    bool elephant1found = false;
+    vector<int> movesToDelete1;
+    vector<int> movesToDelete2;
+
+    if (colourToMove == 'w'){       //if white to move
+        for (int row = 0; row<7 ; row++){       
+            for (int col = 0; col < 7; col++){
+                if (vecBoardState[row][col] == "E"){        //white elephant
+                    //if the first elephant hasnt been found
+                    if (elephant1found = false){
+                        vector<int> move0{row,col-1};     //left
+                        availablemoves1.push_back(move0);
+                        vector<int> move1{row-1,col};     //up
+                        availablemoves1.push_back(move1);
+                        vector<int> move2{row,col+1};     //right
+                        availablemoves1.push_back(move2);
+                        vector<int> move3{row+1,col};     //down
+                        availablemoves1.push_back(move3);
+                        vector<int> move4{row,col-2};     //jumpleft
+                        availablemoves1.push_back(move4);
+                        vector<int> move5{row-2,col};     //jumpup
+                        availablemoves1.push_back(move5);
+                        vector<int> move6{row,col+2};     //jumpright 
+                        availablemoves1.push_back(move6);
+                        vector<int> move7{row+2,col};     //jumpdown
+                        availablemoves1.push_back(move7);
+                        //available moves has been updated with ALL moves for the first elephant
+                        elephant1found = true;
+                    }else{      //second elephants available moves
+                        vector<int> move0{row,col-1};     //left
+                        availablemoves2.push_back(move0);
+                        vector<int> move1{row-1,col};     //up
+                        availablemoves2.push_back(move1);
+                        vector<int> move2{row,col+1};     //right
+                        availablemoves2.push_back(move2);
+                        vector<int> move3{row+1,col};     //down
+                        availablemoves2.push_back(move3);
+                        vector<int> move4{row,col-2};     //jumpleft
+                        availablemoves2.push_back(move4);
+                        vector<int> move5{row-2,col};     //jumpup
+                        availablemoves2.push_back(move5);
+                        vector<int> move6{row,col+2};     //jumpright 
+                        availablemoves2.push_back(move6);
+                        vector<int> move7{row+2,col};     //jumpdown
+                        availablemoves2.push_back(move7);
+                        //available moves has been updated with ALL moves for the second elephant
+                    }
+                }     
+            }
+        }
+
+        //available moves for elephants have been declared
+        //now to remove all moves for legals moves
+        
+        //elephant 1
+        if (availablemoves1.empty() == false){    
+             //removes moves if it moves off the board 
+            for (int i = 0; i<8; i++){
+                if (availablemoves1[i][0] == -1 || availablemoves1[i][0] == 8 || availablemoves1[i][1] == -1 || availablemoves1[i][1] == 8){     //if the piece moves off the board
+                    movesToDelete1.push_back(i);       //deletes that row (deletes that move)
+                }
+            }
+            //remove moves if it moves into an ally
+            for (int i = 0; i<8; i++){
+                if(vecBoardState[availablemoves1[i][0]][availablemoves1[i][1]] == "P" || vecBoardState[availablemoves1[i][0]][availablemoves1[i][1]] == "E" ||
+                vecBoardState[availablemoves1[i][0]][availablemoves1[i][1]] == "L" || vecBoardState[availablemoves1[i][0]][availablemoves1[i][1]] == "Z"){
+                    movesToDelete1.push_back(i);       //deletes that row (deletes that move)     
+                }
+            }
+        }
+
+        //elephant 2
+        if (availablemoves2.empty()==false){
+            //removes moves if it moves off the board
+            for (int i = 0; i<8; i++){
+                if (availablemoves2[i][0] == -1 || availablemoves2[i][0] == 8 || availablemoves2[i][1] == -1 || availablemoves2[i][1] == 8){     //if the piece moves off the board
+                    movesToDelete2.push_back(i);       //deletes that row (deletes that move)
+                }
+            }
+            //remove moves if it moves into an ally
+            for (int i = 0; i<8; i++){
+                if(vecBoardState[availablemoves2[i][0]][availablemoves2[i][1]] == "P" || vecBoardState[availablemoves2[i][0]][availablemoves2[i][1]] == "E" ||
+                vecBoardState[availablemoves2[i][0]][availablemoves2[i][1]] == "L" || vecBoardState[availablemoves2[i][0]][availablemoves2[i][1]] == "Z"){
+                    movesToDelete2.push_back(i);       //deletes that row (deletes that move)     
+                }
+            }
+        }
+        //remove the moves to be deleted
+        vector<vector<int>> legalmoves;     //vector of legal moves
+        //elephant 1
+        bool dontadd = false;
+        //moves to delete will not copy moves from available moves to legal moves
+        for (int i = 0; i < 8; i++){        //iterate through all available moves
+            for (int remove = 0; remove < movesToDelete1.size() ; remove++){        //iterate through moves to be deleted
+                if (i == movesToDelete1[remove]){
+                    dontadd = true;
+                }
+            }
+            if (!dontadd){
+                legalmoves.push_back(availablemoves1[i]);
+            }
+        }
+        //elephant 2
+        bool dontadd = false;
+        //moves to delete will not copy moves from available moves to legal moves
+        for (int i = 0; i < 8; i++){        //iterate through all available moves
+            for (int remove = 0; remove < movesToDelete2.size() ; remove++){        //iterate through moves to be deleted
+                if (i == movesToDelete2[remove]){
+                    dontadd = true;
+                }
+            }
+            if (!dontadd){
+                legalmoves.push_back(availablemoves2[i]);
+            }
+        }
+
+        //print out availbe moves as move board 
+        
+    }else{      //black to move
+
+    };
+}
+void movesPawn(char colourToMove){
+    //get colour that has to move
+    //get the board state
+    //if white moves we looking for P / else if black move we looking for p
+    //iterate through 2d vector looking for p/P 
+    //get x and y value for p/P
+    //valid moves are 3 in the front (y+-1) with (x,x+1 and x-1)
+    //and valid moves backwards are (y+-1, y+-2)
+    //check invalid moves (same colour/teamate and edge of board)
+}
+
 
 int main(){
     string numInput;
@@ -288,10 +423,4 @@ int main(){
         }
         cout<<endl;
     }
-    
-
-        
-
-    
-
 }
