@@ -465,9 +465,10 @@ void movesLion(string colourToMove){
 }
 
 void movesZebra(string colourToMove){
-    int posRowZ,posColZ;
+    int posRowZ,posColZ,newPosRowZ,newPosColZ,move;
     vector<int>availableMoves={0,1,2,3,4,5,6,7};
     vector<int>vecRowColUpdate;
+    vector<int>movesToDelete;
     map<int,vector<int>>rowColUpdate{
         {0,{2,-1}},{1,{2,1}},{2,{1,2}},{3,{-1,2}},{4,{-2,1}},{5,{-2,-1}},{6,{-1,-2}},{7,{1,-2}}
     };
@@ -483,8 +484,62 @@ void movesZebra(string colourToMove){
         }
         //Cases for movement 
         //Case 1: 1 row from top of board
+        if(posRowZ>=6){
+            removeByValue(availableMoves,0);
+            removeByValue(availableMoves,1);
+        }
         //Case 2: At the top edge of the board
-        //Case 3: 
+        if(posRowZ==7){
+            removeByValue(availableMoves,2);
+            removeByValue(availableMoves,7);
+        }
+        //Case 3: 1 column from right most edge
+        if(posColZ>=6){
+            removeByValue(availableMoves,2);
+            removeByValue(availableMoves,3);
+        }
+        //Case 4: At the right most column
+        if(posColZ==7){
+            removeByValue(availableMoves,1);
+            removeByValue(availableMoves,4);
+        }
+        //Case 5: 1 row from bottom of the board
+        if(posRowZ<=1){
+            removeByValue(availableMoves,4);
+            removeByValue(availableMoves,5);
+        }
+        //Case 6: At bottom row of the board
+        if(posRowZ==0){
+            removeByValue(availableMoves,3);
+            removeByValue(availableMoves,6);
+        }
+        //Case 7: One column from left most edge
+        if(posColZ<=1){
+            removeByValue(availableMoves,6);
+            removeByValue(availableMoves,7);
+        }
+        //Case 8: At the left most edge of the board
+        if(posColZ==0){
+            removeByValue(availableMoves,0);
+            removeByValue(availableMoves,5);
+        }
+        //Case 9: Check for own pieces blocking
+        for(int i=0;i<availableMoves.size();i++){
+            move=availableMoves[i];
+            vecRowColUpdate=rowColUpdate[move];
+            newPosRowZ=posRowZ+vecRowColUpdate[0];
+            newPosColZ=posColZ+vecRowColUpdate[1];
+            if(vecBoardState[newPosRowZ][newPosColZ]=="P"||vecBoardState[newPosRowZ][newPosColZ]=="L"||vecBoardState[newPosRowZ][newPosColZ]=="E"){
+                movesToDelete.push_back(move);
+            }
+        }
+        if(!movesToDelete.empty()){
+            for(int i=0;i<movesToDelete.size();i++){
+                removeByValue(availableMoves,movesToDelete[i]);
+            }
+        }
+        //Output the available moves
+        
     }else{
         //Find the position of the black zebra
         for(int row=0;row<7;row++){
@@ -495,7 +550,93 @@ void movesZebra(string colourToMove){
                 }
             }
         }
+ //Cases for movement 
+        //Case 1: 1 row from top of board
+        if(posRowZ>=6){
+            removeByValue(availableMoves,0);
+            removeByValue(availableMoves,1);
+        }
+        //Case 2: At the top edge of the board
+        if(posRowZ==7){
+            removeByValue(availableMoves,2);
+            removeByValue(availableMoves,7);
+        }
+        //Case 3: 1 column from right most edge
+        if(posColZ>=6){
+            removeByValue(availableMoves,2);
+            removeByValue(availableMoves,3);
+        }
+        //Case 4: At the right most column
+        if(posColZ==7){
+            removeByValue(availableMoves,1);
+            removeByValue(availableMoves,4);
+        }
+        //Case 5: 1 row from bottom of the board
+        if(posRowZ<=1){
+            removeByValue(availableMoves,4);
+            removeByValue(availableMoves,5);
+        }
+        //Case 6: At bottom row of the board
+        if(posRowZ==0){
+            removeByValue(availableMoves,3);
+            removeByValue(availableMoves,6);
+        }
+        //Case 7: One column from left most edge
+        if(posColZ<=1){
+            removeByValue(availableMoves,6);
+            removeByValue(availableMoves,7);
+        }
+        //Case 8: At the left most edge of the board
+        if(posColZ==0){
+            removeByValue(availableMoves,0);
+            removeByValue(availableMoves,5);
+        }
+        //Case 9: Check for own pieces blocking
+        for(int i=0;i<availableMoves.size();i++){
+            move=availableMoves[i];
+            vecRowColUpdate=rowColUpdate[move];
+            newPosRowZ=posRowZ+vecRowColUpdate[0];
+            newPosColZ=posColZ+vecRowColUpdate[1];
+            if(vecBoardState[newPosRowZ][newPosColZ]=="p"||vecBoardState[newPosRowZ][newPosColZ]=="l"||vecBoardState[newPosRowZ][newPosColZ]=="e"){
+                movesToDelete.push_back(move);
+            }
+        }
+        if(!movesToDelete.empty()){
+            for(int i=0;i<movesToDelete.size();i++){
+                removeByValue(availableMoves,movesToDelete[i]);
+            }
+        }
+        //Output available moves
     }
+
+    // string outputLine;
+    vector<string>vecOutputLine;
+    string currSquare,nextSquare;
+    
+    //Translate the available moves to a square
+    for(int i=0;i<availableMoves.size();i++){
+        move=availableMoves[i];
+        //Use a map to give the row and col updates for a move
+        vecRowColUpdate=rowColUpdate[move];
+        //Translate square to the correct board notation
+        currSquare=colToString[posColZ]+to_string(posRowZ+1);
+        nextSquare=colToString[newPosColZ]+to_string(newPosRowZ+1);
+        //Add the move to outputLine
+        vecOutputLine.push_back(currSquare+nextSquare);
+    }    
+    //Check for empty output line
+    if(!vecOutputLine.empty()){
+        insertionSort(vecOutputLine);
+        for(int i=0;i<vecOutputLine.size();i++){
+            if(i!=vecOutputLine.size()-1){
+                cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
+            }else{
+                cout<<vecOutputLine[i]<<endl;
+            }
+            
+        }
+    }
+
     resetBoard();
 }
 
@@ -522,7 +663,7 @@ int main(){
         //     }
         //     cout<<endl;
         // }
-        movesLion(vecLine[1]);
+        movesZebra(vecLine[1]);
     }
     
         
