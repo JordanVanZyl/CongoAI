@@ -501,13 +501,6 @@ void movesElephant(string colourToMove){
             }
         }
 
-        // for (int i = 0; i < availablemoves1.size(); i++){
-        //     for (int j = 0; j < availablemoves1[i].size(); j++){
-        //         cout << availablemoves1[i][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
-
         //available moves for elephants have been declared
         //now to remove all moves for legals moves
         
@@ -663,13 +656,6 @@ void movesElephant(string colourToMove){
             }
         }
 
-        // for (int i = 0; i < availablemoves1.size(); i++){
-        //     for (int j = 0; j < availablemoves1[i].size(); j++){
-        //         cout << availablemoves1[i][j] << " ";
-        //     }
-        //     cout << endl;
-        // }
-
         //available moves for elephants have been declared
         //now to remove all moves for legals moves
         
@@ -779,29 +765,200 @@ void movesElephant(string colourToMove){
     resetBoard();
 }
 
-// string legalpawnmoves(string colourToMove, vector<int> origin){
+vector<string> legalpawnmoves(string colourToMove, vector<int> origin){
+    vector<vector<int>> allmoves, legalmoves;
+    vector<int> movesToDelete;
+    int row = origin[0], col = origin[1];
+    string originnotation, moveto;
+    bool pawnblockedback=false, dontadd;
+    vector<string> legalmovesstring;
 
-// }
+    originnotation = colToString[col] + to_string(row+1); //eg pawn start at e5
 
-// void movesPawn(string colourToMove){
-//     //get colour that has to move
-//     if (colourToMove == "w"){
-//         for(int row = 0; row<7; row++){
-//             for(int col = 0; col < 7; col++){
-//                 if (vecBoardState)
-//             }
-//         }
-//     }else{
+    if(colourToMove == "w"){
+        //all possible moves
+        vector<int> move0 = {row+1, col-1}; //top left
+        allmoves.push_back(move0);
+        vector<int> move1 = {row+1, col}; // top
+        allmoves.push_back(move1);
+        vector<int> move3 = {row+1, col+1}; // top right
+        allmoves.push_back(move3);
 
-//     }
-//     //get the board state
-//     //if white moves we looking for P / else if black move we looking for p
-//     //iterate through 2d vector looking for p/P 
-//     //get x and y value for p/P
-//     //valid moves are 3 in the front (y+-1) with (x,x+1 and x-1)
-//     //and valid moves backwards are (y+-1, y+-2)
-//     //check invalid moves (same colour/teamate and edge of board)
-// }
+        //for moves to be removed
+        for (int i = 0; i<3; i++){
+            if (allmoves[i][0] < 0 || allmoves[i][0] > 6 || allmoves[i][1] < 0 || allmoves[i][1] > 6){     //if the piece moves off the board
+                movesToDelete.push_back(i);       //deletes that row (deletes that move)
+            }else if(vecBoardState[allmoves[i][0]][allmoves[i][1]] == "P" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "E" ||
+            vecBoardState[allmoves[i][0]][allmoves[i][1]] == "L" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "Z"){
+                movesToDelete.push_back(i);       //deletes that row (deletes that move)
+            }
+        }
+
+        if(row>3){      //past the river can do extra moves
+            //all possible moves if it crossed the river
+            vector<int> move4 = {row-1, col}; // jump one back
+            allmoves.push_back(move4);
+            vector<int> move5 = {row-2, col}; //jump 2 back
+            allmoves.push_back(move5);
+
+            //for moves to be removed
+            for (int i = 3; i<5; i++){
+                if (allmoves[i][0] < 0 || allmoves[i][0] > 6 || allmoves[i][1] < 0 || allmoves[i][1] > 6){     //if the piece moves off the board
+                    movesToDelete.push_back(i);       //deletes that row (deletes that move)
+                }
+                else if(i==3){
+                    if(vecBoardState[allmoves[i][0]][allmoves[i][1]] == "P" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "E" ||
+                    vecBoardState[allmoves[i][0]][allmoves[i][1]] == "L" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "Z" ||
+                    vecBoardState[allmoves[i][0]][allmoves[i][1]] == "p" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "e" ||
+                    vecBoardState[allmoves[i][0]][allmoves[i][1]] == "l" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "z"){
+                        movesToDelete.push_back(i);
+                        pawnblockedback = true;
+                    } 
+                }
+                else if(i==4){
+                    if(pawnblockedback){
+                        movesToDelete.push_back(i);
+                    }else{
+                        if(vecBoardState[allmoves[i][0]][allmoves[i][1]] == "P" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "E" ||
+                        vecBoardState[allmoves[i][0]][allmoves[i][1]] == "L" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "Z" ||
+                        vecBoardState[allmoves[i][0]][allmoves[i][1]] == "p" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "e" ||
+                        vecBoardState[allmoves[i][0]][allmoves[i][1]] == "l" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "z"){
+                            movesToDelete.push_back(i);
+                        }   
+                    }
+                }
+            } 
+        }
+    }else if(colourToMove=="b"){
+        //all possible moves
+        vector<int> move0 = {row-1, col-1}; //bottom left
+        allmoves.push_back(move0);
+        vector<int> move1 = {row-1, col}; // bottom
+        allmoves.push_back(move1);
+        vector<int> move3 = {row-1, col+1}; // bottom right
+        allmoves.push_back(move3);
+
+        //for moves to be removed
+        for (int i = 0; i<3; i++){
+            if (allmoves[i][0] < 0 || allmoves[i][0] > 6 || allmoves[i][1] < 0 || allmoves[i][1] > 6){     //if the piece moves off the board
+                movesToDelete.push_back(i);       //deletes that row (deletes that move)
+            }else if(vecBoardState[allmoves[i][0]][allmoves[i][1]] == "p" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "e" ||
+            vecBoardState[allmoves[i][0]][allmoves[i][1]] == "l" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "z"){
+                movesToDelete.push_back(i);       //deletes that row (deletes that move)
+            }
+        }
+
+        if(row<4){      //past the river can do extra moves
+            //all possible moves if it crossed the river
+            vector<int> move4 = {row+1, col}; // jump one back
+            allmoves.push_back(move4);
+            vector<int> move5 = {row+2, col}; //jump 2 back
+            allmoves.push_back(move5);
+
+            //for moves to be removed
+            for (int i = 3; i<5; i++){
+                if (allmoves[i][0] < 0 || allmoves[i][0] > 6 || allmoves[i][1] < 0 || allmoves[i][1] > 6){     //if the piece moves off the board
+                    movesToDelete.push_back(i);       //deletes that row (deletes that move)
+                }
+                else if(i==3){
+                    if(vecBoardState[allmoves[i][0]][allmoves[i][1]] == "P" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "E" ||
+                    vecBoardState[allmoves[i][0]][allmoves[i][1]] == "L" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "Z" ||
+                    vecBoardState[allmoves[i][0]][allmoves[i][1]] == "p" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "e" ||
+                    vecBoardState[allmoves[i][0]][allmoves[i][1]] == "l" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "z"){
+                        movesToDelete.push_back(i);
+                        pawnblockedback = true;
+                    } 
+                }
+                else if(i==4){
+                    if(pawnblockedback){
+                        movesToDelete.push_back(i);
+                    }else{
+                        if(vecBoardState[allmoves[i][0]][allmoves[i][1]] == "P" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "E" ||
+                        vecBoardState[allmoves[i][0]][allmoves[i][1]] == "L" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "Z" ||
+                        vecBoardState[allmoves[i][0]][allmoves[i][1]] == "p" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "e" ||
+                        vecBoardState[allmoves[i][0]][allmoves[i][1]] == "l" || vecBoardState[allmoves[i][0]][allmoves[i][1]] == "z"){
+                            movesToDelete.push_back(i);
+                        }   
+                    }
+                }
+            } 
+        }
+    }
+
+    //create a vector containing legal moves
+    dontadd = false;
+    //moves to delete will not copy moves from available moves to legal moves
+    if (!movesToDelete.empty()){
+        for (int i = 0; i < allmoves.size(); i++){        //iterate through all available moves
+            for (int remove = 0; remove < movesToDelete.size() ; remove++){        //iterate through moves to be deleted
+                if (i == movesToDelete[remove]){
+                    dontadd = true;
+                }
+            }
+            if(!dontadd){
+                legalmoves.push_back(allmoves[i]);
+            }
+            dontadd = false;
+        }
+
+    }else{
+        legalmoves = allmoves;
+    }
+    
+    //adding legal moves to the lists with cnotations
+    if (!legalmoves.empty()){
+        for (int i =0 ; i < legalmoves.size(); i++){
+            moveto = colToString[legalmoves[i][1]]+to_string(legalmoves[i][0]+1);
+            legalmovesstring.push_back(originnotation + moveto);
+        }
+    }
+
+    return legalmovesstring;
+    
+}
+
+void movesPawn(string colourToMove){
+    //get colour that has to move
+    vector<string> legalmovesstring, movesofcurrentpawn;
+    string listmoves;
+    if (colourToMove == "w"){
+        //get the board state
+        for(int row = 0; row<7; row++){
+            for(int col = 0; col < 7; col++){
+                if (vecBoardState[row][col] == "P"){        //if white moves we looking for P / else if black move we looking for p
+                    movesofcurrentpawn = legalpawnmoves("w", {row,col});
+                    //add the moves of this pawn to the vector of all the legal moves possible
+                    legalmovesstring.insert(legalmovesstring.end(), movesofcurrentpawn.begin(), movesofcurrentpawn.end());
+                }
+            }
+        }
+    }else{
+        //get the board state
+        for(int row = 0; row<7; row++){
+            for(int col = 0; col < 7; col++){
+                if (vecBoardState[row][col] == "p"){        //if white moves we looking for P / else if black move we looking for p
+                    movesofcurrentpawn = legalpawnmoves("b", {row,col});
+                    //add the moves of this pawn to the vector of all the legal moves possible
+                    legalmovesstring.insert(legalmovesstring.end(), movesofcurrentpawn.begin(), movesofcurrentpawn.end());
+                }
+            }
+        }
+    }
+    
+    if(!legalmovesstring.empty()){
+            sort(legalmovesstring.begin(), legalmovesstring.end());
+            for (int i = 0; i < legalmovesstring.size(); i++){
+                listmoves = listmoves + legalmovesstring[i] + " ";
+            }
+        }
+        
+        if(!listmoves.empty()){
+            listmoves.pop_back();
+        }
+        
+        cout << listmoves << endl;
+    resetBoard();
+}
 
 
 int main(){
@@ -826,6 +983,6 @@ int main(){
         //     }
         //     cout<<endl;
         // }
-        movesElephant(vecLine[1]);
+        movesPawn(vecLine[1]);
     }
 }
