@@ -755,12 +755,19 @@ void movesElephant(string colourToMove){
     }   
 }
 
-// string legalpawnmoves(char colourToMove, vector<int> origin){
+string legalpawnmoves(string colourToMove, vector<int> origin){
 
-// }
+}
 
-// void movesPawn(char colourToMove){
+// void movesPawn(string colourToMove){
 //     //get colour that has to move
+//     if (colourToMove == "w"){
+//         for(int row = 0; row<7; row++){
+//             for(int)
+//         }
+//     }else{
+
+//     }
 //     //get the board state
 //     //if white moves we looking for P / else if black move we looking for p
 //     //iterate through 2d vector looking for p/P 
