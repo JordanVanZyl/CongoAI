@@ -443,7 +443,8 @@ void movesElephant(string colourToMove){
     vector < vector<int> > availablemoves1, availablemoves2, legalmoves1, legalmoves2; //list of available moves for the first elephant
     vector<int> movesToDelete1, movesToDelete2, originalposition1, originalposition2;
     bool elephant1found = false;
-    string e1position, e2position;
+    string e1position, e2position, moveto, listmoves;
+    vector<string> legalmovesstring1, legalmovesstring2;
 
     if (colourToMove == "w"){       //if white to move
         for (int row = 0; row<7 ; row++){       
@@ -563,18 +564,36 @@ void movesElephant(string colourToMove){
         }
 
         //print out availbe moves as move board
-        //elephant 1
-        string moveto, listmoves;
-        for (int i =0 ; i < legalmoves1.size(); i++){
-            moveto = colToString[legalmoves1[i][1]]+to_string(legalmoves1[i][0]+1);
-            listmoves += e1position + moveto + " ";
+        
+        //elephant2 first because our array 0,0 is bottom left but steve wants it to start at top left
+        if (!legalmoves2.empty()){
+            for (int i =0 ; i < legalmoves2.size(); i++){
+                moveto = colToString[legalmoves2[i][1]]+to_string(legalmoves2[i][0]+1);
+                legalmovesstring2.push_back(e2position+moveto);
+            }
         }
-        //elephant2
-        for (int i =0 ; i < legalmoves2.size(); i++){
-            moveto = colToString[legalmoves2[i][1]]+to_string(legalmoves2[i][0]+1);
-            listmoves += e2position + moveto + " ";
+        //elephant 1
+        if (!legalmoves1.empty()){
+            for (int i =0 ; i < legalmoves1.size(); i++){
+                moveto = colToString[legalmoves1[i][1]]+to_string(legalmoves1[i][0]+1);
+                legalmovesstring1.push_back(e1position+moveto);
+            }
         }
 
+        if(!legalmovesstring2.empty()){
+            sort(legalmovesstring2.begin(), legalmovesstring2.end());
+            for (int i = 0; i < legalmovesstring2.size(); i++){
+                listmoves = listmoves + legalmovesstring2[i] + " ";
+            }
+        }
+
+        if(!legalmovesstring1.empty()){
+            sort(legalmovesstring1.begin(), legalmovesstring1.end());
+            for (int i = 0; i < legalmovesstring1.size(); i++){
+                listmoves = listmoves + legalmovesstring1[i] + " ";
+            }
+        }
+        
         if(!listmoves.empty()){
             listmoves.pop_back();
         }
@@ -698,35 +717,58 @@ void movesElephant(string colourToMove){
         }
 
         //print out availbe moves as move board
-        //elephant 1
-        string moveto, listmoves;
-        for (int i =0 ; i < legalmoves1.size(); i++){
-            moveto = colToString[legalmoves1[i][1]]+to_string(legalmoves1[i][0]+1);
-            listmoves += e1position + moveto + " ";
+        
+        //elephant2 first because our array 0,0 is bottom left but steve wants it to start at top left
+        if (!legalmoves2.empty()){
+            for (int i =0 ; i < legalmoves2.size(); i++){
+                moveto = colToString[legalmoves2[i][1]]+to_string(legalmoves2[i][0]+1);
+                legalmovesstring2.push_back(e2position+moveto);
+            }
         }
-        //elephant2
-        for (int i =0 ; i < legalmoves2.size(); i++){
-            moveto = colToString[legalmoves2[i][1]]+to_string(legalmoves2[i][0]+1);
-            listmoves += e2position + moveto + " ";
+        //elephant 1
+        if (!legalmoves1.empty()){
+            for (int i =0 ; i < legalmoves1.size(); i++){
+                moveto = colToString[legalmoves1[i][1]]+to_string(legalmoves1[i][0]+1);
+                legalmovesstring1.push_back(e1position+moveto);
+            }
         }
 
+        if(!legalmovesstring2.empty()){
+            sort(legalmovesstring2.begin(), legalmovesstring2.end());
+            for (int i = 0; i < legalmovesstring2.size(); i++){
+                listmoves = listmoves + legalmovesstring2[i] + " ";
+            }
+        }
+
+        if(!legalmovesstring1.empty()){
+            sort(legalmovesstring1.begin(), legalmovesstring1.end());
+            for (int i = 0; i < legalmovesstring1.size(); i++){
+                listmoves = listmoves + legalmovesstring1[i] + " ";
+            }
+        }
+        
         if(!listmoves.empty()){
             listmoves.pop_back();
         }
         
         cout << listmoves << endl;
-    };
+    }   
 }
-void movesPawn(char colourToMove){
-    //get colour that has to move
-    //get the board state
-    //if white moves we looking for P / else if black move we looking for p
-    //iterate through 2d vector looking for p/P 
-    //get x and y value for p/P
-    //valid moves are 3 in the front (y+-1) with (x,x+1 and x-1)
-    //and valid moves backwards are (y+-1, y+-2)
-    //check invalid moves (same colour/teamate and edge of board)
-}
+
+// string legalpawnmoves(char colourToMove, vector<int> origin){
+
+// }
+
+// void movesPawn(char colourToMove){
+//     //get colour that has to move
+//     //get the board state
+//     //if white moves we looking for P / else if black move we looking for p
+//     //iterate through 2d vector looking for p/P 
+//     //get x and y value for p/P
+//     //valid moves are 3 in the front (y+-1) with (x,x+1 and x-1)
+//     //and valid moves backwards are (y+-1, y+-2)
+//     //check invalid moves (same colour/teamate and edge of board)
+// }
 
 
 int main(){
