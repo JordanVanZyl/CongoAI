@@ -848,7 +848,7 @@ vector<string> legalpawnmoves(string colourToMove, vector<int> origin){
             }
         }
 
-        if(row<4){      //past the river can do extra moves
+        if(row<3){      //past the river can do extra moves
             //all possible moves if it crossed the river
             vector<int> move4 = {row+1, col}; // jump one back
             allmoves.push_back(move4);
@@ -914,7 +914,6 @@ vector<string> legalpawnmoves(string colourToMove, vector<int> origin){
     }
 
     return legalmovesstring;
-    
 }
 
 void movesPawn(string colourToMove){
@@ -932,7 +931,7 @@ void movesPawn(string colourToMove){
                 }
             }
         }
-    }else{
+    }else if(colourToMove == "b"){
         //get the board state
         for(int row = 0; row<7; row++){
             for(int col = 0; col < 7; col++){
@@ -946,17 +945,18 @@ void movesPawn(string colourToMove){
     }
     
     if(!legalmovesstring.empty()){
-            sort(legalmovesstring.begin(), legalmovesstring.end());
-            for (int i = 0; i < legalmovesstring.size(); i++){
-                listmoves = listmoves + legalmovesstring[i] + " ";
-            }
+        sort(legalmovesstring.begin(), legalmovesstring.end());
+        for (int i = 0; i < legalmovesstring.size(); i++){
+            listmoves = listmoves + legalmovesstring[i] + " ";
         }
+    }
         
-        if(!listmoves.empty()){
-            listmoves.pop_back();
-        }
+    if(!listmoves.empty()){
+        listmoves.pop_back();
+    }
         
-        cout << listmoves << endl;
+    cout << listmoves << endl;
+
     resetBoard();
 }
 
