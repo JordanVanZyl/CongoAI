@@ -11,6 +11,7 @@
 
 using namespace std;
 
+int colourHasWon=0;
 //For outputting in submission one
 vector<vector<string>>vecBoardOutput(16);
 //For tracking the board state
@@ -44,6 +45,37 @@ map<int,string>lineToOut{
     {6,"white monkey: "},{7,"black monkey: "},{8,"white elephant: "},{9,"black elephant: "},{10,"white lion: "},{11,"black lion: "},
     {12,"white crocodile: "},{13,"black crocodile: "},{14,"white zebra: "},{15,"black zebra: "}
 };
+
+void printBoardState(vector<vector<string>>theBoardState){
+    cout<<endl;
+    for(int row=6;row>=0;row--){
+        for(int col=0;col<7;col++){
+            cout<<theBoardState[row][col]<<" ";
+        }
+        cout<<endl;
+    }
+}
+
+vector<int> squaresOfDrowningPieces(vector<vector<string>>theBoardState,string colourToMove){
+    vector<int>drowningCols;
+    //Look for white drowning pieces
+    if(colourToMove=="w"){
+        for(int col;col<7;col++){
+            if(theBoardState[3][col]=="P"||theBoardState[3][col]=="Z"||theBoardState[3][col]=="E"){
+                drowningCols.push_back(col);
+            }
+        }
+    }else{
+        //Look for black drowing pieces
+        for(int col;col<7;col++){
+            if(theBoardState[3][col]=="p"||theBoardState[3][col]=="z"||theBoardState[3][col]=="e"){
+                drowningCols.push_back(col);
+            }
+        }
+    }
+
+    return drowningCols;
+}
 
 //s=string to split, del=thing to split by in string form, vec=1D vector to store the split in
 void stringTokenizer(std::string s, std::string del, std::vector<std::string>&vec)
@@ -1215,12 +1247,15 @@ string stateToFEN(vector<vector<string>>boardState,string playerToMove,int moveN
     return FENString;
 }
 
-string initialiseMove(string movepiece, string tomove, string movenumber){
+string initialiseMove(string movepiece, string tomove, string movenumber,int &winningColour){
     vector<vector<string>> temporaryboard;
+    vector<int>drowningCols;
     string piecetomove, locationtomove, temprow, tempcol, piece, nextmove, nextBoardState;
     int rowpiece, colpiece, rowlocation, collocation, movenum;
     //copy board state
     temporaryboard = vecBoardState; 
+    //find drowning pieces
+    drowningCols=squaresOfDrowningPieces(temporaryboard,tomove);
     //get location of the piece to move
     piecetomove = movepiece.substr(0,2);
     temprow = piecetomove.at(1);
@@ -1239,9 +1274,13 @@ string initialiseMove(string movepiece, string tomove, string movenumber){
     temporaryboard[rowpiece][colpiece] = "-";
       
     if(tomove == "w" && vecBoardState[rowlocation][collocation]=="l"){
-        return "White wins";
+        winningColour=1;
     }else if(tomove == "b" && vecBoardState[rowlocation][collocation]=="L"){
-        return "Black wins"; 
+        winningColour=-1;
+    }
+    //piece is starting and ending in the river
+    if(rowpiece==3&&rowlocation==3){
+        drowningCols.push_back(collocation);
     }
     temporaryboard[rowlocation][collocation] = piece; 
 
@@ -1252,15 +1291,22 @@ string initialiseMove(string movepiece, string tomove, string movenumber){
         nextmove = "w";
         movenum += 1;
     }
-    
+    //Delete the drowned pieces
+    for(int i=0;i<drowningCols.size();i++){
+        temporaryboard[3][drowningCols[i]]="-";
+    }
     nextBoardState = stateToFEN(temporaryboard, nextmove, movenum);
-
+    // printBoardState(temporaryboard);
+    resetBoard();
     return nextBoardState;
 } 
+
+
 
 int main(){
     string numInput;
     string line,moveToMake;
+    string initMoveString;
 
     getline(cin,numInput);
     vecLines.resize(stoi(numInput));
@@ -1269,20 +1315,25 @@ int main(){
         getline(cin,line);
         vecLines[k]=line;
         getline(cin,moveToMake);
-        vecMovesToMake[k]=line;
+        vecMovesToMake[k]=moveToMake;
     }
 
     // printBoard();
     for(int i=0;i<vecLines.size();i++){
         initBoard(vecLines[i]);
+        // printBoardState(vecBoardState);
 
-        // cout<<endl;
-        // for(int row=6;row>=0;row--){
-        //     for(int col=0;col<7;col++){
-        //         cout<<vecBoardState[row][col]<<" ";
-        //     }
-        //     cout<<endl;
-        // }
         //movesZebra(vecLine[1]);
+        initMoveString=initialiseMove(vecMovesToMake[i],vecLine[1],vecLine[2],colourHasWon);
+        cout<<initMoveString<<endl;  
+        if(colourHasWon==1){
+            cout<<"White wins"<<endl;
+        }else if(colourHasWon==-1){
+            cout<<"Black wins"<<endl;
+        }
+        else if(colourHasWon==0){
+            cout<<"Continue"<<endl;
+        }
+        
     }
 }
