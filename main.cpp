@@ -21,6 +21,8 @@ vector<string>vecLine;
 vector<string>vecBoardLine;
 //Stores all the orginal lines entered 
 vector<string>vecLines;
+//Stores moves to make
+vector<string>vecMovesToMake;
 
 vector<string>vecColStr={"a","b","c","d","e","f","g"};
 map<string,int>animalToOut{
@@ -1176,13 +1178,16 @@ void movesZebra(string colourToMove){
 
 int main(){
     string numInput;
-    string line;
+    string line,moveToMake;
 
     getline(cin,numInput);
     vecLines.resize(stoi(numInput));
+    vecMovesToMake.resize(stoi(numInput));
     for(int k=0;k<stoi(numInput);k++){
         getline(cin,line);
         vecLines[k]=line;
+        getline(cin,moveToMake);
+        vecMovesToMake[k]=line;
     }
 
     // printBoard();
