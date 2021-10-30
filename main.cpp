@@ -1180,11 +1180,45 @@ void movesZebra(string colourToMove){
     }
     resetBoard();
 }
+string stateToFEN(vector<vector<string>>boardState,string playerToMove,int moveNumber ){
+    string FENString="",FENLine,blockString;
+    int skip=0;
+    for(int row=6;row>=0;row--){
+        for (int col = 0; col<7; col++)
+        {
+            blockString=boardState[row][col];
 
-string initialiseMove(string movepiece){
+            if(blockString=="-"){
+                skip+=1;
+                if(col==6){
+                    FENLine+=to_string(skip);
+                }
+            }else if(skip!=0){
+                FENLine+=to_string(skip);
+                FENLine+=blockString;
+                skip=0;
+            }else{
+                FENLine+=blockString;
+            }
+            
+        }
+        skip=0;
+        FENString+=FENLine;
+        if(row!=0){
+            FENString+="/";
+        }
+        FENLine="";
+    }
+
+    FENString=FENString+" "+playerToMove+" "+to_string(moveNumber);
+
+    return FENString;
+}
+
+string initialiseMove(string movepiece, string tomove, string movenumber){
     vector<vector<string>> temporaryboard;
-    string piecetomove, locationtomove, temprow, tempcol, piece, colour;
-    int rowpiece, colpiece, rowlocation, collocation;
+    string piecetomove, locationtomove, temprow, tempcol, piece, colour, nextmove, nextBoardState;
+    int rowpiece, colpiece, rowlocation, collocation, movenum;
 
     temporaryboard = vecBoardState;
 
@@ -1204,7 +1238,7 @@ string initialiseMove(string movepiece){
         for(int col=0; col<7; col++){
             if(row == rowpiece && col == colpiece){
                 piece = vecBoardState[row][col];
-                vecBoardState[row][col] = "-";
+                temporaryboard[row][col] = "-";
             }
         }
     }
@@ -1224,16 +1258,22 @@ string initialiseMove(string movepiece){
                     return "Black wins"; 
                 }
 
-                vecBoardState[row][col] = piece; 
+                temporaryboard[row][col] = piece; 
             }
         }
     }
+
+    movenum = stoi(movenumber);
+    if(tomove=="w"){
+        nextmove="b";
+    }else if(tomove == "b"){
+        nextmove = "w";
+        movenum += 1;
+    }
     
-    // input temporary board into toFEN function
-    // if w to move switch to b to move
-    // if b to move switch to w to move and update movenumber +1
-    // create string of example output
-    
+    nextBoardState = stateToFEN(temporaryboard, nextmove, movenum);
+
+    return nextBoardState;
 } 
 
 int main(){
