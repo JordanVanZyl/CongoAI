@@ -25,6 +25,7 @@ vector<string>vecLines;
 vector<string>vecMovesToMake;
 
 vector<string>vecColStr={"a","b","c","d","e","f","g"};
+
 map<string,int>animalToOut{
     {"P",0},{"p",1},{"S",2},{"s",3},{"G",4},{"g",5},{"M",6},{"m",7},
     {"E",8},{"e",9},{"L",10},{"l",11},{"C",12},{"c",13},{"Z",14},{"z",15}
@@ -32,7 +33,11 @@ map<string,int>animalToOut{
 //Converting column number to letter on the board for output
 map<int,string>colToString{
         {0,"a"},{1,"b"},{2,"c"},{3,"d"},{4,"e"},{5,"f"},{6,"g"}
-    };
+};
+
+map<string,int>stringToCol{
+        {"a",0},{"b",1},{"c",2},{"d",3},{"e",4},{"f",5},{"g",6}
+};
 
 map<int,string>lineToOut{
     {0,"white pawn: "},{1,"black pawn: "},{2,"white superpawn: "},{3,"black superpawn: "},{4,"white giraffe: "},{5,"black giraffe: "},
@@ -195,6 +200,7 @@ void removeByValue(vector<int>&vec,int value){
         }
     }
 }
+
 void movesLion(string colourToMove){
     //TODO: Figure out why we are failing the last testcase on moodle
     int rowPosWL,colPosWL, rowPosBL, colPosBL;
@@ -1175,6 +1181,60 @@ void movesZebra(string colourToMove){
     resetBoard();
 }
 
+string initialiseMove(string movepiece){
+    vector<vector<string>> temporaryboard;
+    string piecetomove, locationtomove, temprow, tempcol, piece, colour;
+    int rowpiece, colpiece, rowlocation, collocation;
+
+    temporaryboard = vecBoardState;
+
+    piecetomove = movepiece.substr(0,2);
+    temprow = piecetomove.at(1);
+    tempcol = piecetomove.at(0);
+    rowpiece = stoi(temprow)-1;
+    colpiece = stringToCol[tempcol];
+
+    locationtomove = movepiece.substr(2,4);
+    temprow = locationtomove.at(1);
+    tempcol = locationtomove.at(0);
+    rowlocation = stoi(temprow)-1;
+    collocation = stringToCol[tempcol];
+
+    for(int row=0; row<7; row++){
+        for(int col=0; col<7; col++){
+            if(row == rowpiece && col == colpiece){
+                piece = vecBoardState[row][col];
+                vecBoardState[row][col] = "-";
+            }
+        }
+    }
+
+    if(piece == "L" || piece == "E" || piece == "Z" || piece == "P"){
+        colour = "White";
+    }else{
+        colour = "Black";
+    }
+
+    for(int row=0; row<7; row++){
+        for(int col=0; col<7; col++){
+            if(row == rowlocation && col == collocation){
+                if(colour == "White" && vecBoardState[row][col]=="l"){
+                    return "White wins";
+                }else if(colour == "Black" && vecBoardState[row][col]=="L"){
+                    return "Black wins"; 
+                }
+
+                vecBoardState[row][col] = piece; 
+            }
+        }
+    }
+    
+    // input temporary board into toFEN function
+    // if w to move switch to b to move
+    // if b to move switch to w to move and update movenumber +1
+    // create string of example output
+    
+} 
 
 int main(){
     string numInput;
