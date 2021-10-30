@@ -1217,51 +1217,33 @@ string stateToFEN(vector<vector<string>>boardState,string playerToMove,int moveN
 
 string initialiseMove(string movepiece, string tomove, string movenumber){
     vector<vector<string>> temporaryboard;
-    string piecetomove, locationtomove, temprow, tempcol, piece, colour, nextmove, nextBoardState;
+    string piecetomove, locationtomove, temprow, tempcol, piece, nextmove, nextBoardState;
     int rowpiece, colpiece, rowlocation, collocation, movenum;
-
-    temporaryboard = vecBoardState;
-
+    //copy board state
+    temporaryboard = vecBoardState; 
+    //get location of the piece to move
     piecetomove = movepiece.substr(0,2);
     temprow = piecetomove.at(1);
     tempcol = piecetomove.at(0);
-    rowpiece = stoi(temprow)-1;
-    colpiece = stringToCol[tempcol];
-
+    rowpiece = stoi(temprow)-1;     //row of piece to move
+    colpiece = stringToCol[tempcol];        //col of piece to move
+    //get location of where to move
     locationtomove = movepiece.substr(2,4);
     temprow = locationtomove.at(1);
     tempcol = locationtomove.at(0);
-    rowlocation = stoi(temprow)-1;
-    collocation = stringToCol[tempcol];
-
-    for(int row=0; row<7; row++){
-        for(int col=0; col<7; col++){
-            if(row == rowpiece && col == colpiece){
-                piece = vecBoardState[row][col];
-                temporaryboard[row][col] = "-";
-            }
-        }
+    rowlocation = stoi(temprow)-1;      //which row to go to
+    collocation = stringToCol[tempcol];     //which col to go to
+    
+    //what piece we moving? setting on the temporary board that location to empty
+    piece = vecBoardState[rowpiece][colpiece];
+    temporaryboard[rowpiece][colpiece] = "-";
+      
+    if(tomove == "w" && vecBoardState[rowlocation][collocation]=="l"){
+        return "White wins";
+    }else if(tomove == "b" && vecBoardState[rowlocation][collocation]=="L"){
+        return "Black wins"; 
     }
-
-    if(piece == "L" || piece == "E" || piece == "Z" || piece == "P"){
-        colour = "White";
-    }else{
-        colour = "Black";
-    }
-
-    for(int row=0; row<7; row++){
-        for(int col=0; col<7; col++){
-            if(row == rowlocation && col == collocation){
-                if(colour == "White" && vecBoardState[row][col]=="l"){
-                    return "White wins";
-                }else if(colour == "Black" && vecBoardState[row][col]=="L"){
-                    return "Black wins"; 
-                }
-
-                temporaryboard[row][col] = piece; 
-            }
-        }
-    }
+    temporaryboard[rowlocation][collocation] = piece; 
 
     movenum = stoi(movenumber);
     if(tomove=="w"){
@@ -1301,6 +1283,6 @@ int main(){
         //     }
         //     cout<<endl;
         // }
-        movesZebra(vecLine[1]);
+        //movesZebra(vecLine[1]);
     }
 }
