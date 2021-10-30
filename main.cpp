@@ -1175,6 +1175,41 @@ void movesZebra(string colourToMove){
     resetBoard();
 }
 
+string stateToFEN(vector<vector<string>>boardState,string playerToMove,int moveNumber ){
+    string FENString="",FENLine,blockString;
+    int skip=0;
+    for(int row=6;row>=0;row--){
+        for (int col = 0; col<7; col++)
+        {
+            blockString=boardState[row][col];
+
+            if(blockString=="-"){
+                skip+=1;
+                if(col==6){
+                    FENLine+=to_string(skip);
+                }
+            }else if(skip!=0){
+                FENLine+=to_string(skip);
+                FENLine+=blockString;
+                skip=0;
+            }else{
+                FENLine+=blockString;
+            }
+            
+        }
+        skip=0;
+        FENString+=FENLine;
+        if(row!=0){
+            FENString+="/";
+        }
+        FENLine="";
+    }
+
+    FENString=FENString+" "+playerToMove+" "+to_string(moveNumber);
+
+    return FENString;
+}
+
 
 int main(){
     string numInput;
@@ -1201,6 +1236,7 @@ int main(){
         //     }
         //     cout<<endl;
         // }
-        movesZebra(vecLine[1]);
+        // movesZebra(vecLine[1]);
+
     }
 }
