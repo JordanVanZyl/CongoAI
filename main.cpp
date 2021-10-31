@@ -187,7 +187,7 @@ void resetBoard(){
     
 }
 
-void initBoard(vector<vector<string>>&theBoardState,string line){
+vector<string> initBoard(vector<vector<string>>&theBoardState,string line){
     //First vector split by spaces
     vector<string>vecLine;
     //Second vector splitting by / for the state of the board
@@ -222,6 +222,8 @@ void initBoard(vector<vector<string>>&theBoardState,string line){
             }
         }
     }
+
+    return {vecLine[1],vecLine[2]};
 }
 
 void removeByValue(vector<int>&vec,int value){
