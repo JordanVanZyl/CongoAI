@@ -16,10 +16,6 @@ int colourHasWon=0;
 vector<vector<string>>vecBoardOutput(16);
 //For tracking the board state
 vector<vector<string>>vecBoardState(7,vector<string>(7,"-"));
-//First vector split by spaces
-vector<string>vecLine;
-//Second vector splitting by / for the state of the board
-vector<string>vecBoardLine;
 //Stores all the orginal lines entered 
 vector<string>vecLines;
 //Stores moves to make
@@ -107,80 +103,80 @@ void insertionSort(std::vector<std::string>&array) {
    }
 }
 
-void printBoard(){
-    string line;
-    //Loop through all board lines entered
-    for(int numInput=0;numInput<vecLines.size();numInput++){
-        //Clear splitting vectors
-        vecBoardLine.clear();
-        vecLine.clear();
-        //Get the line to split
-        line=vecLines[numInput];
-        //Split by spaces to give board, move number and colour to play
-        stringTokenizer(line," ",vecLine);
-        //Split by slashes to give each row for the board ordered in descending row order
-        stringTokenizer(vecLine[0],"/",vecBoardLine);
-        //Reverse the vector holding the board line to give the board rows in ascending order
-        reverse(vecBoardLine.begin(),vecBoardLine.end());
+// void printBoard(){
+//     string line;
+//     //Loop through all board lines entered
+//     for(int numInput=0;numInput<vecLines.size();numInput++){
+//         //Clear splitting vectors
+//         vecBoardLine.clear();
+//         vecLine.clear();
+//         //Get the line to split
+//         line=vecLines[numInput];
+//         //Split by spaces to give board, move number and colour to play
+//         stringTokenizer(line," ",vecLine);
+//         //Split by slashes to give each row for the board ordered in descending row order
+//         stringTokenizer(vecLine[0],"/",vecBoardLine);
+//         //Reverse the vector holding the board line to give the board rows in ascending order
+//         reverse(vecBoardLine.begin(),vecBoardLine.end());
     
 
-        int skip,pos;
-        int col,charToRead;
-        for(int row=6;row>=0;row--){
-            col=0;
-            //Loop through each letter in the string for a board line
-            for(int charToRead=0;charToRead<vecBoardLine[row].size();charToRead++){
-                //Check for a skip digit
-                if(isdigit(vecBoardLine[row][charToRead])){
-                    //Get the number in the correct form
-                    skip=stoi(vecBoardLine[row].substr(charToRead,1));
-                    //Perform the column skip
-                    col+=skip;
-                }else{
-                    //Get the value of the row in the vector that will output to console
-                    pos=animalToOut[vecBoardLine[row].substr(charToRead,1)];
-                    //Push the position of the piece to the correct row in the vector that will output to console
-                    vecBoardOutput[pos].push_back(vecColStr[col]+to_string(row+1));
-                    //Increment the column number normally
-                    col+=1;
-                }
-            }
-        }
+//         int skip,pos;
+//         int col,charToRead;
+//         for(int row=6;row>=0;row--){
+//             col=0;
+//             //Loop through each letter in the string for a board line
+//             for(int charToRead=0;charToRead<vecBoardLine[row].size();charToRead++){
+//                 //Check for a skip digit
+//                 if(isdigit(vecBoardLine[row][charToRead])){
+//                     //Get the number in the correct form
+//                     skip=stoi(vecBoardLine[row].substr(charToRead,1));
+//                     //Perform the column skip
+//                     col+=skip;
+//                 }else{
+//                     //Get the value of the row in the vector that will output to console
+//                     pos=animalToOut[vecBoardLine[row].substr(charToRead,1)];
+//                     //Push the position of the piece to the correct row in the vector that will output to console
+//                     vecBoardOutput[pos].push_back(vecColStr[col]+to_string(row+1));
+//                     //Increment the column number normally
+//                     col+=1;
+//                 }
+//             }
+//         }
 
-        //Go through all the rows in the vector that will output to console
-        for(int i=0;i<16;i++){
-            line="";
-            //Start the line with the initial required string
-            line+=lineToOut[i];
-            int elementNum=0;
-            //Get the length of the vector line containing the piece positions
-            elementNum=vecBoardOutput[i].size();
-            //Sort the vector line of piece positions in ascending order
-            insertionSort(vecBoardOutput[i]);
-            //Add all the positions to the line
-            for(int j=0;j<elementNum;j++){
-                line+=vecBoardOutput[i][j]+" ";
-            }
-            //Output the line in console
-            cout<<line<<endl;
-        }
+//         //Go through all the rows in the vector that will output to console
+//         for(int i=0;i<16;i++){
+//             line="";
+//             //Start the line with the initial required string
+//             line+=lineToOut[i];
+//             int elementNum=0;
+//             //Get the length of the vector line containing the piece positions
+//             elementNum=vecBoardOutput[i].size();
+//             //Sort the vector line of piece positions in ascending order
+//             insertionSort(vecBoardOutput[i]);
+//             //Add all the positions to the line
+//             for(int j=0;j<elementNum;j++){
+//                 line+=vecBoardOutput[i][j]+" ";
+//             }
+//             //Output the line in console
+//             cout<<line<<endl;
+//         }
 
-        //Output the final line of whose turn it is
-        if(vecLine[1]=="b"){
-            cout<<"side to play: black\n";
-        }else{
-            cout<<"side to play: white\n";
-        }
+//         //Output the final line of whose turn it is
+//         if(vecLine[1]=="b"){
+//             cout<<"side to play: black\n";
+//         }else{
+//             cout<<"side to play: white\n";
+//         }
 
-        cout<<endl;
+//         cout<<endl;
 
-        //CLear the vector containing the piece positions
-        for(int i=0;i<16;i++){
-            vecBoardOutput[i].clear();
-        }
-    }
+//         //CLear the vector containing the piece positions
+//         for(int i=0;i<16;i++){
+//             vecBoardOutput[i].clear();
+//         }
+//     }
     
-}
+// }
 
 void resetBoard(){
     for(int row=0;row<7;row++){
@@ -191,7 +187,11 @@ void resetBoard(){
     
 }
 
-void initBoard(string line){
+void initBoard(vector<vector<string>>&theBoardState,string line){
+    //First vector split by spaces
+    vector<string>vecLine;
+    //Second vector splitting by / for the state of the board
+    vector<string>vecBoardLine;
     //Clear splitting vectors
     vecBoardLine.clear();
     vecLine.clear();
@@ -216,7 +216,7 @@ void initBoard(string line){
                 col+=skip;
             }else{
                 //Update the board with the piece
-                vecBoardState[row][col]=vecBoardLine[row][charToRead];
+                theBoardState[row][col]=vecBoardLine[row][charToRead];
                 //Increment the column number normally
                 col+=1;
             }
@@ -1362,6 +1362,7 @@ int main(){
     string numInput;
     string line;
     string initMoveString;
+    vector<string>vecLine;
     // string moveToMake;
 
     getline(cin,numInput);
@@ -1376,7 +1377,8 @@ int main(){
 
     // printBoard();
     for(int i=0;i<vecLines.size();i++){
-        initBoard(vecLines[i]);
+        initBoard(vecBoardState,vecLines[i]);
+        stringTokenizer(vecLines[i]," ",vecLine);
         // printBoardState(vecBoardState);
 
         //movesZebra(vecLine[1]);
@@ -1393,6 +1395,6 @@ int main(){
 
         cout<<to_string(evaluatePosition(vecBoardState,vecLine[1]))<<endl;
         resetBoard();
-        
+        vecLine.clear();
     }
 }
