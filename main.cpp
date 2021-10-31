@@ -1338,7 +1338,25 @@ int evaluatePosition(vector<vector<string>>theBoardState,string colourToMove){
     return pieceScore;
 }
 
+vector<string> generateMoves(vector<vector<string>> theBoardState, string colourToMove){
+    vector<string> pawnmoves, elephantmoves, zebramoves, lionmoves, allmoves;
+    
+    //getting all the moves
+    pawnmoves = movesPawn(theBoardState, colourToMove);
+    elephantmoves = movesElephant(theBoardState, colourToMove);
+    zebramoves = movesZebra(theBoardState, colourToMove);
+    lionmoves = movesLion(theBoardState, colourToMove);
 
+    //adding all the moves
+    allmoves.insert(allmoves.end(), pawnmoves.begin(), pawnmoves.end());
+    allmoves.insert(allmoves.end(), elephantmoves.begin(), elephantmoves.end());
+    allmoves.insert(allmoves.end(), zebramoves.begin(), zebramoves.end());
+    allmoves.insert(allmoves.end(), lionmoves.begin(), lionmoves.end());
+
+    sort(allmoves.begin(), allmoves.end());
+
+    return allmoves;
+}
 
 int main(){
     string numInput;
