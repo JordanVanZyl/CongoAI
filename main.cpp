@@ -1301,21 +1301,77 @@ string initialiseMove(string movepiece, string tomove, string movenumber,int &wi
     return nextBoardState;
 } 
 
+int evaluatePosition(vector<vector<string>>theBoardState,string colourToMove){
+    //Two maps that hold the number of pieces of each type on the board
+    map<string,int>pieceCounts{
+        {"L",0},{"E",0},{"P",0},{"Z",0},{"l",0},{"e",0},{"p",0},{"z",0}
+    };
+    map<string,int>pieceScores{
+        {"E",200},{"P",100},{"Z",300},{"e",-200},{"p",-100},{"z",-300}
+    };
+    string currentSquare;
+    int pieceScore=0;
+    bool foundAPiece=false;
+    //Loop through the board and increment the map
+    for(int row=0;row<7;row++){
+        for(int col=0;col<7;col++){
+            currentSquare=theBoardState[row][col];
+            if(theBoardState[row][col]!="-"){
+                pieceCounts[currentSquare]+=1;
+
+                if(currentSquare!="L"&&currentSquare!="l"){
+                    foundAPiece=true;
+                }
+            }
+        }
+    }
+
+    //Check for a draw
+    if(!foundAPiece&&pieceCounts["L"]==1&&pieceCounts["l"]==1){
+        return 0;
+    }
+    //Otherwise check for white win
+    else if(pieceCounts["L"]==1&&pieceCounts["l"]==0){
+        pieceScore=10000;
+    }
+    //Otherwise check for black win
+    else if(pieceCounts["L"]==0&&pieceCounts["l"]==1){
+        pieceScore=-10000;
+    }else{
+        //Otherwise calculate the score of the remaining pieces
+        pieceScore+=pieceCounts["E"]*pieceScores["E"];
+        pieceScore+=pieceCounts["P"]*pieceScores["P"];
+        pieceScore+=pieceCounts["Z"]*pieceScores["Z"];
+        
+        pieceScore+=pieceCounts["e"]*pieceScores["e"];
+        pieceScore+=pieceCounts["p"]*pieceScores["p"];
+        pieceScore+=pieceCounts["z"]*pieceScores["z"];
+    }
+
+
+    if(colourToMove=="b"){
+        pieceScore*=-1;
+    }
+    
+    return pieceScore;
+}
+
 
 
 int main(){
     string numInput;
-    string line,moveToMake;
+    string line;
     string initMoveString;
+    // string moveToMake;
 
     getline(cin,numInput);
     vecLines.resize(stoi(numInput));
-    vecMovesToMake.resize(stoi(numInput));
+    // vecMovesToMake.resize(stoi(numInput));
     for(int k=0;k<stoi(numInput);k++){
         getline(cin,line);
         vecLines[k]=line;
-        getline(cin,moveToMake);
-        vecMovesToMake[k]=moveToMake;
+        // getline(cin,moveToMake);
+        // vecMovesToMake[k]=moveToMake;
     }
 
     // printBoard();
@@ -1324,16 +1380,19 @@ int main(){
         // printBoardState(vecBoardState);
 
         //movesZebra(vecLine[1]);
-        initMoveString=initialiseMove(vecMovesToMake[i],vecLine[1],vecLine[2],colourHasWon);
-        cout<<initMoveString<<endl;  
-        if(colourHasWon==1){
-            cout<<"White wins"<<endl;
-        }else if(colourHasWon==-1){
-            cout<<"Black wins"<<endl;
-        }
-        else if(colourHasWon==0){
-            cout<<"Continue"<<endl;
-        }
+        // initMoveString=initialiseMove(vecMovesToMake[i],vecLine[1],vecLine[2],colourHasWon);
+        // cout<<initMoveString<<endl;  
+        // if(colourHasWon==1){
+        //     cout<<"White wins"<<endl;
+        // }else if(colourHasWon==-1){
+        //     cout<<"Black wins"<<endl;
+        // }
+        // else if(colourHasWon==0){
+        //     cout<<"Continue"<<endl;
+        // }
+
+        cout<<to_string(evaluatePosition(vecBoardState,vecLine[1]))<<endl;
+        resetBoard();
         
     }
 }
