@@ -233,17 +233,16 @@ void removeByValue(vector<int>&vec,int value){
     }
 }
 
-void movesLion(string colourToMove){
-    //TODO: Figure out why we are failing the last testcase on moodle
+vector<string> movesLion(vector<vector<string>>theBoardState,string colourToMove){
     int rowPosWL,colPosWL, rowPosBL, colPosBL;
 
     //Looking for uppercase L
     for(int row=0;row<7;row++){
         for(int col=0;col<7;col++){
-            if(vecBoardState[row][col]=="L"){
+            if(theBoardState[row][col]=="L"){
                 rowPosWL=row;
                 colPosWL=col;
-            }else if(vecBoardState[row][col]=="l"){
+            }else if(theBoardState[row][col]=="l"){
                 rowPosBL=row;
                 colPosBL=col;
             }      
@@ -296,7 +295,7 @@ void movesLion(string colourToMove){
             newRow=rowPosWL+vecRowColUpdate[0];
             newCol=colPosWL+vecRowColUpdate[1];
 
-            if(vecBoardState[newRow][newCol]=="P"||vecBoardState[newRow][newCol]=="E"||vecBoardState[newRow][newCol]=="Z"){
+            if(theBoardState[newRow][newCol]=="P"||theBoardState[newRow][newCol]=="E"||theBoardState[newRow][newCol]=="Z"){
                 movesToDelete.push_back(move);
             }
         }
@@ -313,7 +312,7 @@ void movesLion(string colourToMove){
             openColumn=true;
             //Check if any piece is blocking them
             for(int i=rowPosWL+1;i<rowPosBL;i++){
-                if(vecBoardState[i][colPosWL]!="-"){
+                if(theBoardState[i][colPosWL]!="-"){
                     openColumn=false;
                     break;
                 }
@@ -325,7 +324,7 @@ void movesLion(string colourToMove){
         //Check for the diagonal capture
         else if(rowPosWL==2&&rowPosBL==4){
             //Check for piece blocking in the centre of the board
-            if(vecBoardState[3][3]=="-"){
+            if(theBoardState[3][3]=="-"){
                 //Case 1: our lion at left edge of the square and enemy on the opposite edge
                 if(colPosWL==2&&colPosBL==4){
                     availableMoves.push_back(8);
@@ -418,7 +417,7 @@ void movesLion(string colourToMove){
             newRow=rowPosBL+vecRowColUpdate[0];
             newCol=colPosBL+vecRowColUpdate[1];
 
-            if(vecBoardState[newRow][newCol]=="p"||vecBoardState[newRow][newCol]=="e"||vecBoardState[newRow][newCol]=="z"){
+            if(theBoardState[newRow][newCol]=="p"||theBoardState[newRow][newCol]=="e"||theBoardState[newRow][newCol]=="z"){
                 movesToDelete.push_back(move);
             }
         }
@@ -435,7 +434,7 @@ void movesLion(string colourToMove){
             openColumn=true;
             //Check if any piece is blocking them
             for(int i=rowPosWL+1;i<rowPosBL;i++){
-                if(vecBoardState[i][colPosWL]!="-"){
+                if(theBoardState[i][colPosWL]!="-"){
                     openColumn=false;
                     break;
                 }
@@ -447,7 +446,7 @@ void movesLion(string colourToMove){
         //Check for the diagonal capture
         else if(rowPosWL==2&&rowPosBL==4){
             //Check if there is piece blocking in the centre of the board
-            if(vecBoardState[3][3]=="-"){
+            if(theBoardState[3][3]=="-"){
                 //Case 1: our lion at left edge of the square and enemy on the opposite edge
                 if(colPosWL==2&&colPosBL==4){
                     availableMoves.push_back(8);
@@ -485,22 +484,13 @@ void movesLion(string colourToMove){
         //Check for empty output line
         if(!vecOutputLine.empty()){
             insertionSort(vecOutputLine);
-            for(int i=0;i<vecOutputLine.size();i++){
-                if(i!=vecOutputLine.size()-1){
-                    cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
-                }else{
-                    cout<<vecOutputLine[i]<<endl;
-                }
-                
-            }
         }
+       
+        return vecOutputLine;
      
         
     }
-    if(!availableMoves.empty()){
-        cout<<endl;
-    }
-    resetBoard();
+    // resetBoard();
 }
 
 void movesElephant(string colourToMove){
@@ -1023,8 +1013,7 @@ void movesPawn(string colourToMove){
     resetBoard();
 }
 
-void movesZebra(string colourToMove){
-    //TODO: No Zebra on the board
+vector<string> movesZebra(vector<vector<string>>theBoardState,string colourToMove){
     bool foundZebra=false;
     int posRowZ,posColZ,newPosRowZ,newPosColZ,move;
     vector<int>availableMoves={0,1,2,3,4,5,6,7};
@@ -1037,7 +1026,7 @@ void movesZebra(string colourToMove){
         //Find the position of the white zebra
         for(int row=0;row<7;row++){
             for(int col=0;col<7;col++){
-                if(vecBoardState[row][col]=="Z"){
+                if(theBoardState[row][col]=="Z"){
                     posRowZ=row;
                     posColZ=col;
                     foundZebra=true;
@@ -1092,7 +1081,7 @@ void movesZebra(string colourToMove){
                 vecRowColUpdate=rowColUpdate[move];
                 newPosRowZ=posRowZ+vecRowColUpdate[0];
                 newPosColZ=posColZ+vecRowColUpdate[1];
-                if(vecBoardState[newPosRowZ][newPosColZ]=="P"||vecBoardState[newPosRowZ][newPosColZ]=="L"||vecBoardState[newPosRowZ][newPosColZ]=="E"){
+                if(theBoardState[newPosRowZ][newPosColZ]=="P"||theBoardState[newPosRowZ][newPosColZ]=="L"||theBoardState[newPosRowZ][newPosColZ]=="E"){
                     movesToDelete.push_back(move);
                 }
             }
@@ -1107,7 +1096,7 @@ void movesZebra(string colourToMove){
         //Find the position of the black zebra
         for(int row=0;row<7;row++){
             for(int col=0;col<7;col++){
-                if(vecBoardState[row][col]=="z"){
+                if(theBoardState[row][col]=="z"){
                     posRowZ=row;
                     posColZ=col;
                     foundZebra=true;
@@ -1163,7 +1152,7 @@ void movesZebra(string colourToMove){
                 vecRowColUpdate=rowColUpdate[move];
                 newPosRowZ=posRowZ+vecRowColUpdate[0];
                 newPosColZ=posColZ+vecRowColUpdate[1];
-                if(vecBoardState[newPosRowZ][newPosColZ]=="p"||vecBoardState[newPosRowZ][newPosColZ]=="l"||vecBoardState[newPosRowZ][newPosColZ]=="e"){
+                if(theBoardState[newPosRowZ][newPosColZ]=="p"||theBoardState[newPosRowZ][newPosColZ]=="l"||theBoardState[newPosRowZ][newPosColZ]=="e"){
                     movesToDelete.push_back(move);
                 }
             }
@@ -1175,9 +1164,8 @@ void movesZebra(string colourToMove){
             //Output available moves
         }
     }
+    vector<string>vecOutputLine;
     if(foundZebra){
-        // string outputLine;
-        vector<string>vecOutputLine;
         string currSquare,nextSquare;
         
         if(!availableMoves.empty()){
@@ -1198,19 +1186,10 @@ void movesZebra(string colourToMove){
             //Check for empty output line
             if(!vecOutputLine.empty()){
                 insertionSort(vecOutputLine);
-                for(int i=0;i<vecOutputLine.size();i++){
-                    if(i!=vecOutputLine.size()-1){
-                        cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
-                    }else{
-                        cout<<vecOutputLine[i]<<endl;
-                    }
-                    
-                }
             }
-
         }
     }
-    resetBoard();
+    return vecOutputLine;
 }
 string stateToFEN(vector<vector<string>>boardState,string playerToMove,int moveNumber ){
     string FENString="",FENLine,blockString;
