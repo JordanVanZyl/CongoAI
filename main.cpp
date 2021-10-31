@@ -979,7 +979,7 @@ vector<string> movesPawn(vector<vector<string>> theBoardState, string colourToMo
         //get the board state
         for(int row = 0; row<7; row++){
             for(int col = 0; col < 7; col++){
-                if (vecBoardState[row][col] == "p"){        //if white moves we looking for P / else if black move we looking for p
+                if (theBoardState[row][col] == "p"){        //if white moves we looking for P / else if black move we looking for p
                     movesofcurrentpawn = legalpawnmoves(theBoardState, "b", {row,col});
                     //add the moves of this pawn to the vector of all the legal moves possible
                     legalmovesstring.insert(legalmovesstring.end(), movesofcurrentpawn.begin(), movesofcurrentpawn.end());
@@ -1380,7 +1380,7 @@ int miniMax(string currentStateFEN, int depth){
     vector<vector<string>>currentState(7,vector<string>(7,"-"));
     
     vecColourMovNum=initBoard(currentState,currentStateFEN);
-    printBoardState(currentState);
+    // printBoardState(currentState);
     colourToMove=vecColourMovNum[0];
     moveNumber=vecColourMovNum[1];
 
