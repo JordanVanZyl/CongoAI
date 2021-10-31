@@ -1348,13 +1348,23 @@ vector<string> generateMoves(vector<vector<string>> theBoardState, string colour
     lionmoves = movesLion(theBoardState, colourToMove);
 
     //adding all the moves
-    allmoves.insert(allmoves.end(), pawnmoves.begin(), pawnmoves.end());
-    allmoves.insert(allmoves.end(), elephantmoves.begin(), elephantmoves.end());
-    allmoves.insert(allmoves.end(), zebramoves.begin(), zebramoves.end());
-    allmoves.insert(allmoves.end(), lionmoves.begin(), lionmoves.end());
+    if (!pawnmoves.empty()){
+        allmoves.insert(allmoves.end(), pawnmoves.begin(), pawnmoves.end());
+    }
+    if (!elephantmoves.empty()){
+        allmoves.insert(allmoves.end(), elephantmoves.begin(), elephantmoves.end());
+    }
+    if (!zebramoves.empty()){
+        allmoves.insert(allmoves.end(), zebramoves.begin(), zebramoves.end());
+    }
+    if (!lionmoves.empty()){
+        allmoves.insert(allmoves.end(), lionmoves.begin(), lionmoves.end());
+    }
 
-    sort(allmoves.begin(), allmoves.end());
-
+    if (!allmoves.empty()){
+        sort(allmoves.begin(), allmoves.end());
+    }
+    
     return allmoves;
 }
 
