@@ -237,7 +237,8 @@ void removeByValue(vector<int>&vec,int value){
 
 vector<string> movesLion(vector<vector<string>>theBoardState,string colourToMove){
     int rowPosWL,colPosWL, rowPosBL, colPosBL;
-
+    // string outputLine;
+    vector<string>vecOutputLine;
     //Looking for uppercase L
     for(int row=0;row<7;row++){
         for(int col=0;col<7;col++){
@@ -344,7 +345,6 @@ vector<string> movesLion(vector<vector<string>>theBoardState,string colourToMove
         // string outputLine;
         
         string currSquare,nextSquare;
-        vector<string>vecOutputLine;
         //Translate the available moves to a square
         for(int i=0;i<availableMoves.size();i++){
             //Use a map to give the row and col updates for a move
@@ -369,17 +369,7 @@ vector<string> movesLion(vector<vector<string>>theBoardState,string colourToMove
         if(!vecOutputLine.empty()){
             //For sorted output
             insertionSort(vecOutputLine);
-            for(int i=0;i<vecOutputLine.size();i++){
-                if(i!=vecBoardOutput.size()-1){
-                    cout<<vecOutputLine[i]<<" ";//Output all the squares we can move to
-                }else{
-                    cout<<vecOutputLine[i]<<endl;
-                }
-                
-            }
         }
-      
-
 
     }else{
         //Case 1: left most column
@@ -459,8 +449,7 @@ vector<string> movesLion(vector<vector<string>>theBoardState,string colourToMove
                 }
             }
         }
-        // string outputLine;
-        vector<string>vecOutputLine;
+        
         string currSquare,nextSquare;
        
         //Translate the available moves to a square
@@ -488,11 +477,9 @@ vector<string> movesLion(vector<vector<string>>theBoardState,string colourToMove
             insertionSort(vecOutputLine);
         }
        
-        return vecOutputLine;
-     
-        
     }
     // resetBoard();
+    return vecOutputLine;
 }
 
 vector<string> movesElephant(vector<vector<string>> theBoardState, string colourToMove){
@@ -1229,7 +1216,7 @@ string stateToFEN(vector<vector<string>>boardState,string playerToMove,int moveN
     return FENString;
 }
 
-string initialiseMove(vector<vector<string>> temporaryboard, string movepiece, string tomove, string movenumber,int &winningColour){
+string initialiseMove(vector<vector<string>> temporaryboard, string movepiece, string tomove, string movenumber){
     //vector<vector<string>> temporaryboard;
     vector<int>drowningCols;
     string piecetomove, locationtomove, temprow, tempcol, piece, nextmove, nextBoardState;
@@ -1255,11 +1242,11 @@ string initialiseMove(vector<vector<string>> temporaryboard, string movepiece, s
     piece = temporaryboard[rowpiece][colpiece];
     temporaryboard[rowpiece][colpiece] = "-";
       
-    if(tomove == "w" && temporaryboard[rowlocation][collocation]=="l"){
-        winningColour=1;
-    }else if(tomove == "b" && temporaryboard[rowlocation][collocation]=="L"){
-        winningColour=-1;
-    }
+    // if(tomove == "w" && temporaryboard[rowlocation][collocation]=="l"){
+    //     winningColour=1;
+    // }else if(tomove == "b" && temporaryboard[rowlocation][collocation]=="L"){
+    //     winningColour=-1;
+    // }
     //piece is starting and ending in the river
     if(rowpiece==3&&rowlocation==3){
         drowningCols.push_back(collocation);
@@ -1368,12 +1355,58 @@ vector<string> generateMoves(vector<vector<string>> theBoardState, string colour
     return allmoves;
 }
 
+bool isGameOver(vector<vector<string>>theBoardState){
+    bool foundBlackLion=false,foundWhiteLion=false;
+    for(int row=0;row<theBoardState.size();row++){
+        for(int col=0;col<theBoardState.size();col++){
+            if(theBoardState[row][col]=="L"){
+                foundWhiteLion=true;
+            }else if(theBoardState[row][col]=="l"){
+                foundBlackLion=true;
+            }
+        }
+    }
+
+    return !(foundWhiteLion&&foundBlackLion);
+}
+
+int miniMax(string currentStateFEN, int depth){
+    int value,eval;
+    vector<string>vecColourMovNum;
+    vector<string>moves;
+    string colourToMove,moveNumber;
+    string nextState;
+
+    vector<vector<string>>currentState(7,vector<string>(7,"-"));
+    
+    vecColourMovNum=initBoard(currentState,currentStateFEN);
+    printBoardState(currentState);
+    colourToMove=vecColourMovNum[0];
+    moveNumber=vecColourMovNum[1];
+
+    if(isGameOver(currentState)||depth<=0){
+        return evaluatePosition(currentState,colourToMove);
+    }
+    value=-10000000;
+    moves=generateMoves(currentState,colourToMove);
+
+    for(auto move:moves){
+        nextState=initialiseMove(currentState,move,colourToMove,moveNumber);
+        eval=-miniMax(nextState,depth-1);
+        if(eval>value){
+            value=eval;
+        }
+    }
+    return value;
+}
+
 int main(){
     string numInput;
     string line;
     string initMoveString;
     vector<string>vecLine;
     // string moveToMake;
+    int score,depth=2;
 
     getline(cin,numInput);
     vecLines.resize(stoi(numInput));
@@ -1387,8 +1420,11 @@ int main(){
 
     // printBoard();
     for(int i=0;i<vecLines.size();i++){
-        initBoard(vecBoardState,vecLines[i]);
-        stringTokenizer(vecLines[i]," ",vecLine);
+        // initBoard(vecBoardState,vecLines[i]);
+        // stringTokenizer(vecLines[i]," ",vecLine);
+        score=miniMax(vecLines[i],depth);
+        cout<<score<<endl;
+
         // printBoardState(vecBoardState);
 
         //movesZebra(vecLine[1]);
@@ -1406,5 +1442,6 @@ int main(){
         // cout<<to_string(evaluatePosition(vecBoardState,vecLine[1]))<<endl;
         // resetBoard();
         // vecLine.clear();
+
     }
 }
