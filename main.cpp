@@ -178,10 +178,10 @@ void insertionSort(std::vector<std::string>&array) {
     
 // }
 
-void resetBoard(){
+void resetBoard(vector<vector<string>>theBoardState){
     for(int row=0;row<7;row++){
         for(int col=0;col<7;col++){
-            vecBoardState[row][col]="-";
+            theBoardState[row][col]="-";
         }
     }
     
@@ -1279,7 +1279,7 @@ string initialiseMove(vector<vector<string>> temporaryboard, string movepiece, s
     }
     nextBoardState = stateToFEN(temporaryboard, nextmove, movenum);
     // printBoardState(temporaryboard);
-    resetBoard();
+    // resetBoard();
     return nextBoardState;
 } 
 
@@ -1375,8 +1375,8 @@ int main(){
         //     cout<<"Continue"<<endl;
         // }
 
-        cout<<to_string(evaluatePosition(vecBoardState,vecLine[1]))<<endl;
-        resetBoard();
-        vecLine.clear();
+        // cout<<to_string(evaluatePosition(vecBoardState,vecLine[1]))<<endl;
+        // resetBoard();
+        // vecLine.clear();
     }
 }
